@@ -23,6 +23,7 @@ namespace _02._03._2020
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             
+            
             modelBuilder.Entity<Barber>()
                         .HasMany(s => s.Schedules)
                         .WithRequired(i => i.Barber);
@@ -32,23 +33,41 @@ namespace _02._03._2020
                         .WithMany(c => c.Barbers);
 
             modelBuilder.Entity<Barber>()
-                        .HasMany<VisitingArchive>(s => s.VisitingArchives)
-                        .WithRequired(i => i.Barber);
-
-            modelBuilder.Entity<Barber>()
                         .HasMany<Estimation>(s => s.Estimations)
                         .WithRequired(i => i.Barber);
 
-            modelBuilder.Entity<Customer>()
-                        .HasMany<VisitingArchive>(s => s.VisitingArchives)
-                        .WithRequired(i => i.Customer);
+
 
             modelBuilder.Entity<VisitingArchive>()
-                       .HasRequired(s => s.Customer)
-                       .WithMany()
-                       .WillCascadeOnDelete(false);
+             .HasRequired(s => s.Customer)
+             .WithMany(c => c.VisitingArchives)
+             .WillCascadeOnDelete(false);
 
-                
+            modelBuilder.Entity<VisitingArchive>()
+                 .HasRequired(s => s.Barber)
+                 .WithMany(c => c.VisitingArchives)
+                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<VisitingArchive>()
+                .HasRequired(s => s.Barber)
+                .WithMany(c => c.VisitingArchives)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<VisitingArchive>()
+                .HasRequired(s => s.Feedback)
+                .WithMany(c => c.VisitingArchives)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Barber>()
+                      .HasMany<VisitingArchive>(s => s.VisitingArchives)
+                      .WithRequired(i => i.Barber);
+
+          modelBuilder.Entity<Customer>()
+                      .HasMany<VisitingArchive>(s => s.VisitingArchives)
+                      .WithRequired(i => i.Customer);
+
+  
+
 
         }
 
@@ -77,6 +96,11 @@ namespace _02._03._2020
         public void Schedule()
         {
             this.Schedules = new HashSet<Schedule>();
+        }
+
+        public void Estimation()
+        {
+            this.Estimations = new HashSet<Estimation>();
         }
 
         public void VisitingArchive()
@@ -187,6 +211,11 @@ namespace _02._03._2020
 
     public class Feedback
     {
+        public void VisitingArchive()
+        {
+            this.VisitingArchives = new HashSet<VisitingArchive>();
+        }
+
         public int Id { get; set; }
         public int BarberId { get; set; }
         public int CustomerId { get; set; }
@@ -195,6 +224,8 @@ namespace _02._03._2020
 
         public virtual Barber Barber { get; set; }
         public virtual Customer Customer { get; set; }
+
+        public ICollection<VisitingArchive> VisitingArchives { get; set; }
     }
 
     public class VisitingArchive
