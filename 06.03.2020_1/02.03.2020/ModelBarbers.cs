@@ -110,10 +110,16 @@ namespace _02._03._2020
 
         public int Id { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Name { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Surname { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Patronymic { get; set; }
         [Required]
         public string Email { get; set; }
@@ -141,10 +147,16 @@ namespace _02._03._2020
 
         public int Id { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Name { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Surname { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Patronymic { get; set; }
         public string Email { get; set; }
         [Required]
@@ -156,6 +168,9 @@ namespace _02._03._2020
     public class Position
     {
         public int Id { get; set; }
+        [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Name { get; set; }
 
         public ICollection<Barber> Barbers { get; set; }
@@ -170,7 +185,11 @@ namespace _02._03._2020
 
         public int Id { get; set; }
         [Required]
+        [MaxLength(50)]
+        [MinLength(2)]
         public string Name { get; set; }
+
+        [Range(1,9999999)]
         public int Price { get; set; }
         public int Duration { get; set; }
 

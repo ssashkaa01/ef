@@ -64,6 +64,10 @@
     <Compile Include="Migrations\202003062142200_AddVisitingArchive.designer.cs">
       <DependentUpon>202003062142200_AddVisitingArchive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003062203040_AddDataAnnotations.cs" />
+    <Compile Include="Migrations\202003062203040_AddDataAnnotations.designer.cs">
+      <DependentUpon>202003062203040_AddDataAnnotations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelBarbers.cs" />
     <Compile Include="Program.cs" />
@@ -81,6 +85,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003062142200_AddVisitingArchive.resx">
       <DependentUpon>202003062142200_AddVisitingArchive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003062203040_AddDataAnnotations.resx">
+      <DependentUpon>202003062203040_AddDataAnnotations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
