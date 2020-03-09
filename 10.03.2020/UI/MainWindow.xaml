@@ -1,0 +1,23 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UI"
+       xmlns:BLL="clr-namespace:BLL;assembly=BLL"
+       x:Class="UI.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Loaded="Window_Loaded">
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Row="1" Name="table" AutoGenerateColumns="True" SelectionChanged="DataGrid_SelectionChanged"/>
+
+    </Grid>
+
+    
+</Window>
