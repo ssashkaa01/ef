@@ -10,14 +10,15 @@
         Title="MainWindow" Loaded="Window_Loaded">
 
     <Grid >
-      
+
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="1" Name="table" AutoGenerateColumns="True" SelectionChanged="DataGrid_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,0.334,0.333"/>
+        <DataGrid Grid.Row="1" Name="table" AutoGenerateColumns="True" SelectionChanged="DataGrid_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,0.334,0.333" AddingNewItem="Table_AddingNewItem" BeginningEdit="Table_BeginningEdit" RowEditEnding="Table_RowEditEnding" SelectedCellsChanged="Table_SelectedCellsChanged" CellEditEnding="Table_CellEditEnding" DataContextChanged="Table_DataContextChanged" CurrentCellChanged="Table_CurrentCellChanged"/>
         <ComboBox HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Width="120" Name="SelectedTable" SelectionChanged="SelectedTable_SelectionChanged"/>
+        <Button Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="180,10,0,0" VerticalAlignment="Top" Width="115" Height="22" Click="SaveButton_Click"/>
 
     </Grid>
 

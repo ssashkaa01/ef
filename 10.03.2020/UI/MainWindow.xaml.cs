@@ -29,13 +29,12 @@ namespace UI
         {
             InitializeComponent();
            
-
-            table.ItemsSource = logics.GetDirectors();
-
             SelectedTable.Items.Add("Directors");
             SelectedTable.Items.Add("Workers");
             SelectedTable.Items.Add("Shops");
             SelectedTable.Items.Add("Products");
+
+            SelectedTable.SelectedItem = "Directors";
 
             //DataTableCollection = logics.GetShops();
             //MessageBox.Show("qq");
@@ -44,7 +43,8 @@ namespace UI
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            //MessageBox.Show((table.SelectedItem as DirectorDTO).Education);
+            //logics.UpdateDirector(table.SelectedItem as DirectorDTO);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -57,10 +57,10 @@ namespace UI
 
         private void SelectedTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-          
             ChangeTable(SelectedTable.SelectedValue.ToString());
         }
 
+        // Змінити таблицю
         private void ChangeTable(string tableName)
         {
             switch (tableName)
@@ -81,6 +81,60 @@ namespace UI
                     table.ItemsSource = logics.GetProducts();
                     break;
             }
+        }
+
+        // Збереження даних
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(!logics.SaveAll())
+            {
+                MessageBox.Show("Bad data in table!");
+            }
+            else
+            {
+                MessageBox.Show("Data saved!");
+            }
+        }
+
+        private void Table_AddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+
+            
+
+        }
+
+        private void Table_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            
+        }
+
+        private void Table_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            
+        }
+
+        private void Table_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            
+        }
+
+        private void Table_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+         
+           // logics.UpdateDirector(table.SelectedItem as DirectorDTO);
+            // MessageBox.Show((table.SelectedItem as DirectorDTO).Education);
+            // logics.UpdateDirector(table.SelectedItem as DirectorDTO);
+
+        }
+
+        private void Table_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
+        private void Table_CurrentCellChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show(e.);
         }
     }
 }

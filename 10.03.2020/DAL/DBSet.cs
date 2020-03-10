@@ -21,7 +21,7 @@ namespace DAL
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Shop>().HasRequired(s => s.City).WithMany(c => c.Shops).HasForeignKey(s => s.CityId);
-            modelBuilder.Entity<Shop>().HasRequired(s => s.Director).WithRequiredPrincipal(d => d.Shop);
+            modelBuilder.Entity<Shop>().HasRequired(s => s.Director).WithOptional(d => d.Shop);
             modelBuilder.Entity<Shop>().HasMany(s => s.Products).WithMany(p => p.Shops);
 
             modelBuilder.Entity<Worker>().HasRequired(w => w.Shop).WithMany(s => s.Workers).HasForeignKey(w => w.ShopId);

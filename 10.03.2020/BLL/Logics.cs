@@ -59,5 +59,42 @@ namespace BLL
             }).ToList();
         }
 
+        public void InsertDirector(DirectorDTO i)
+        {
+            ctx.Directors.Add(new Director()
+            {
+                //Id = i.Id,
+                FirstName = i.FirstName,
+                LastName = i.LastName,
+                Email = i.Email,
+                Phone = i.Phone,
+                Education = i.Education
+            });
+        }
+
+        public void UpdateDirector(DirectorDTO i)
+        {
+            Director d = ctx.Directors.First(f => f.Id == f.Id);
+
+
+            d.FirstName = i.FirstName;
+            d.LastName = i.LastName;
+            d.Email = i.Email;
+            d.Phone = i.Phone;
+            d.Education = i.Education;
+            
+        }
+
+        public bool SaveAll() 
+        {
+            try
+            {
+                ctx.SaveChanges();
+            } catch (System.Data.Entity.Validation.DbEntityValidationException e)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

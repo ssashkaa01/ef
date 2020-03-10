@@ -33,7 +33,7 @@ namespace DAL
             var shop1 = ctx.Shops.Add(new Shop() { CityId = 1, Name = "Shop1", ParkingArea = 200, Address = "Address1" });
             var shop2 = ctx.Shops.Add(new Shop() { CityId = 6, Name = "Shop2", ParkingArea = 90, Address = "Address2" });
             var shop3 = ctx.Shops.Add(new Shop() { CityId = 8, Name = "Shop3", ParkingArea = 140, Address = "Address3" });
-            ctx.SaveChanges();
+            //ctx.SaveChanges();
             var director1 = ctx.Directors.Add(new Director() { Shop = shop1, FirstName = "FirstName1", LastName = "LastName1", Email = "email1@email.com", Phone = "0998887766", Education = "Education1" });
             var director2 = ctx.Directors.Add(new Director() { Shop = shop3, FirstName = "FirstName2", LastName = "LastName2", Email = "email2@email.com", Phone = "0998887767", Education = "Education1" });
             var director3 = ctx.Directors.Add(new Director() { Shop = shop2, FirstName = "FirstName3", LastName = "LastName3", Email = "email3@email.com", Phone = "0998887768", Education = "Education1" });
