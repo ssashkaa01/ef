@@ -10,14 +10,16 @@
         Title="MainWindow" Loaded="Window_Loaded">
 
     <Grid >
+      
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="1" Name="table" AutoGenerateColumns="True" SelectionChanged="DataGrid_SelectionChanged"/>
+        <DataGrid Grid.Row="1" Name="table" AutoGenerateColumns="True" SelectionChanged="DataGrid_SelectionChanged" Grid.ColumnSpan="2" Margin="0,0,0.334,0.333"/>
+        <ComboBox HorizontalAlignment="Left" Margin="35,10,0,0" VerticalAlignment="Top" Width="120" Name="SelectedTable" SelectionChanged="SelectedTable_SelectionChanged"/>
 
     </Grid>
 
-    
+
 </Window>

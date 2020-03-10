@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    public class Initializer<T> : DropCreateDatabaseAlways<DBSet>
+    public class Initializer<T> : DropCreateDatabaseIfModelChanges<DBSet>
     {
 
         protected override void Seed(DBSet ctx)
@@ -36,23 +36,23 @@ namespace DAL
             ctx.SaveChanges();
             var director1 = ctx.Directors.Add(new Director() { Shop = shop1, FirstName = "FirstName1", LastName = "LastName1", Email = "email1@email.com", Phone = "0998887766", Education = "Education1" });
             var director2 = ctx.Directors.Add(new Director() { Shop = shop3, FirstName = "FirstName2", LastName = "LastName2", Email = "email2@email.com", Phone = "0998887767", Education = "Education1" });
-            //var director3 = ctx.Directors.Add(new Director() { FirstName = "FirstName3", LastName = "LastName3", Email = "email3@email.com", Phone = "0998887768", Education = "Education1" });
+            var director3 = ctx.Directors.Add(new Director() { Shop = shop2, FirstName = "FirstName3", LastName = "LastName3", Email = "email3@email.com", Phone = "0998887768", Education = "Education1" });
 
-            //ctx.Categories.Add(new Category() { Name = "category1" });
-            //ctx.Categories.Add(new Category() { Name = "category2" });
-            //ctx.Categories.Add(new Category() { Name = "category3" });
-            //ctx.Categories.Add(new Category() { Name = "category4" });
-            //ctx.Categories.Add(new Category() { Name = "category5" });
-            //ctx.Categories.Add(new Category() { Name = "category6" });
+            ctx.Categories.Add(new Category() { Name = "category1" });
+            ctx.Categories.Add(new Category() { Name = "category2" });
+            ctx.Categories.Add(new Category() { Name = "category3" });
+            ctx.Categories.Add(new Category() { Name = "category4" });
+            ctx.Categories.Add(new Category() { Name = "category5" });
+            ctx.Categories.Add(new Category() { Name = "category6" });
 
-            //ctx.WorkersTypes.Add(new WorkerType() { Id = 1, IsStaticSalary = true, Name = "WorkerType1" });
-            //ctx.WorkersTypes.Add(new WorkerType() { Id = 2, IsStaticSalary = true, Name = "WorkerType2" });
-            //ctx.WorkersTypes.Add(new WorkerType() { Id = 3, IsStaticSalary = true, Name = "WorkerType3" });
-            //ctx.WorkersTypes.Add(new WorkerType() { Id = 4, IsStaticSalary = true, Name = "WorkerType4" });
-            //ctx.WorkersTypes.Add(new WorkerType() { Id = 5, IsStaticSalary = true, Name = "WorkerType5" });
+            ctx.WorkersTypes.Add(new WorkerType() { Id = 1, IsStaticSalary = true, Name = "WorkerType1" });
+            ctx.WorkersTypes.Add(new WorkerType() { Id = 2, IsStaticSalary = true, Name = "WorkerType2" });
+            ctx.WorkersTypes.Add(new WorkerType() { Id = 3, IsStaticSalary = true, Name = "WorkerType3" });
+            ctx.WorkersTypes.Add(new WorkerType() { Id = 4, IsStaticSalary = true, Name = "WorkerType4" });
+            ctx.WorkersTypes.Add(new WorkerType() { Id = 5, IsStaticSalary = true, Name = "WorkerType5" });
 
-            //shop1.Workers.Add(new Worker() { Name = "Name1", Surname = "Surname1", Phone = "0991112233", TypeId = 1 });
-            //shop1.Workers.Add(new Worker() { Name = "Name2", Surname = "Surname2", Phone = "0991112234", TypeId = 2 });
+            shop1.Workers.Add(new Worker() { Name = "Name1", Surname = "Surname1", Phone = "0991112233", TypeId = 1 });
+            shop1.Workers.Add(new Worker() { Name = "Name2", Surname = "Surname2", Phone = "0991112234", TypeId = 2 });
             ctx.SaveChanges();
         }
     }

@@ -30,7 +30,12 @@ namespace UI
             InitializeComponent();
            
 
-            table.ItemsSource = logics.GetShops();
+            table.ItemsSource = logics.GetDirectors();
+
+            SelectedTable.Items.Add("Directors");
+            SelectedTable.Items.Add("Workers");
+            SelectedTable.Items.Add("Shops");
+            SelectedTable.Items.Add("Products");
 
             //DataTableCollection = logics.GetShops();
             //MessageBox.Show("qq");
@@ -48,6 +53,34 @@ namespace UI
          
             // Load data by setting the CollectionViewSource.Source property:
             // logicsViewSource.Source = [generic data source]
+        }
+
+        private void SelectedTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+          
+            ChangeTable(SelectedTable.SelectedValue.ToString());
+        }
+
+        private void ChangeTable(string tableName)
+        {
+            switch (tableName)
+            {
+                case "Directors":
+                    table.ItemsSource = logics.GetDirectors();
+                    break;
+
+                case "Workers":
+                    table.ItemsSource = logics.GetWorkers();
+                    break;
+
+                case "Shops":
+                    table.ItemsSource = logics.GetShops();
+                    break;
+
+                case "Products":
+                    table.ItemsSource = logics.GetProducts();
+                    break;
+            }
         }
     }
 }
