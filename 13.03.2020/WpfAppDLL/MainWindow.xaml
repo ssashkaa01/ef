@@ -1,0 +1,25 @@
+﻿<Window x:Class="WpfAppDLL.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAppDLL"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <ToolBar Height="auto" >
+            <Button Margin="10,0" Content="Open DLL" Name="OpenButton" Click="OpenButton_Click"/>
+            <TextBlock Name="TextPathFile" Margin="50,0" VerticalAlignment="Center" Text="not selected"/>
+        </ToolBar>
+        <ComboBox SelectionChanged="ComboBoxClasses_SelectionChanged" Name="ComboBoxClasses" HorizontalAlignment="Left" Margin="28,33.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="170"/>
+        <ComboBox SelectionChanged="ComboBoxMethods_SelectionChanged"  Name="ComboBoxMethods" HorizontalAlignment="Left" Margin="226,33.6,0,0" Grid.Row="1" VerticalAlignment="Top" Width="170"/>
+        <Label Content="Classes" HorizontalAlignment="Left" Margin="28,9.6,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label Content="Methods" HorizontalAlignment="Left" Margin="226,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
