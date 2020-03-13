@@ -36,9 +36,9 @@ namespace WpfAppDLL
     {
         public string _Key { get; set; }
         public string _Value { get; set; }
-        public MemberInfo _Original { get; set; }
+        public MethodInfo _Original { get; set; }
 
-        public ComboBoxMethods(string _key, string _value, MemberInfo _original)
+        public ComboBoxMethods(string _key, string _value, MethodInfo _original)
         {
             _Key = _key;
             _Value = _value;
@@ -84,11 +84,13 @@ namespace WpfAppDLL
         // Оновити комбобокс класів
         private void UpdateComboBoxClasses()
         {
-
+            DLL = null;
             DLL = Assembly.LoadFile(FilePath);
+
             string className = "";
 
             Classes.Clear();
+            Methods.Clear();
 
             foreach (Type type in DLL.GetExportedTypes())
             {
@@ -120,7 +122,7 @@ namespace WpfAppDLL
            
             Type t = Classes[ComboBoxClasses.SelectedIndex]._Original;
 
-            foreach (MemberInfo method in t.GetMethods())
+            foreach (MethodInfo method in t.GetMethods())
             {
                 if (method.ReflectedType.IsPublic)
                 {
@@ -139,6 +141,36 @@ namespace WpfAppDLL
 
         private void ComboBoxMethods_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+           
+            try
+            {
+                // створюємо домен додатку з довільним ім'ям            
+                //AppDomain Domain = AppDomain.CreateDomain("Home Domain");
+
+                // завантажуємо в створений нами домен додатку
+                // підготовлену dll бібліотеку
+                //Assembly asm = Domain.Load(AssemblyName.GetAssemblyName(FilePath));
+
+
+                //asm.GetModule(FilePath).
+                //    GetType(Classes[ComboBoxClasses.SelectedIndex]._Key).
+                //    GetMethod(Methods[ComboBoxMethods.SelectedIndex]._Key).
+                //    Invoke(null, null);
+
+                // відвантажуємо домен додатку
+                //AppDomain.Unload(Domain);
+
+
+                Methods[ComboBoxMethods.SelectedIndex]._Original.Invoke(null, null);
+
+                MessageBox.Show("OK");
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
         }
     }
