@@ -1,0 +1,22 @@
+﻿<Window x:Class="WpfAppCrypt.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAppCrypt"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="Select File" HorizontalAlignment="Left" Margin="31,24,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Label Name="labelSelectFile" Content="not selected" HorizontalAlignment="Left" Margin="141,21,0,0" VerticalAlignment="Top"/>
+        <RadioButton IsChecked="True" Name="radioButtonEncrypt" Content="Encrypt" HorizontalAlignment="Left" Margin="246,155,0,0" VerticalAlignment="Top"/>
+        <RadioButton Name="radioButtonDecrypt" Content="Decrypt" HorizontalAlignment="Left" Margin="460,158,0,0" VerticalAlignment="Top"/>
+        <GroupBox Name="groupBoxDoing" Header="What doing" HorizontalAlignment="Left" Height="100" Margin="210,115,0,0" VerticalAlignment="Top" Width="355"/>
+        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="35" Margin="68,277,0,0" VerticalAlignment="Top" Width="662"/>
+        <Button Name="buttonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="185,360,0,0" VerticalAlignment="Top" Width="75" Click="ButtonCancel_Click"/>
+        <Button Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="531,360,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStart_Click"/>
+        <TextBox Name="textBlockKey" HorizontalAlignment="Left" Height="23" Margin="307,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="216"/>
+        <Label Content="Key:" HorizontalAlignment="Left" Margin="246,233,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
