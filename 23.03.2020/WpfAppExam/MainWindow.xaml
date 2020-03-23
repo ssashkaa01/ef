@@ -1,0 +1,30 @@
+﻿<Window x:Class="WpfAppExam.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAppExam"
+        mc:Ignorable="d"
+        Title="StopWord" Height="279.333" Width="719.333">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Button Name="buttonSelectFolderCopy" Content="Select folder for copy" HorizontalAlignment="Left" Margin="12,25,0,0" VerticalAlignment="Top" Width="179" Click="ButtonSelectFolderCopy_Click"/>
+        <Label Name="labelFolderCopy" Content="not selected" HorizontalAlignment="Left" Margin="206,22,0,0" VerticalAlignment="Top"/>
+        <ProgressBar Name="progressBar" Margin="10" Grid.Row="1"/>
+        <Button Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="212,36.333,0,0" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ButtonStart_Click"/>
+        <Button Name="buttonPause" Content="Pause" HorizontalAlignment="Left" Margin="302,36.333,0,0" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ButtonPause_Click"/>
+        <Button Name="buttonStop" Content="Stop" HorizontalAlignment="Left" Margin="394,36.333,0,0" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ButtonStop_Click"/>
+        <Button Name="buttonSelectFileStopWords" Content="Select file for copy" HorizontalAlignment="Left" Margin="12,56,0,0" VerticalAlignment="Top" Width="179" Click="ButtonSelectFileStopWords_Click"/>
+        <Label Name="labelFileStopWords" Content="not selected" HorizontalAlignment="Left" Margin="206,53,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="textboxCountFiles" HorizontalAlignment="Left" Height="23" Margin="552,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Count copy" HorizontalAlignment="Left" Margin="452,22,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>
