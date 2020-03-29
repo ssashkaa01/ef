@@ -62,8 +62,25 @@ namespace WpfAppRegEdit
             //t1.IsBackground = true;
 
             //t1.Start((object)(sender));
-            await UpdateExpandItems(sender);
 
+
+            //UpdateExpandItems(sender);
+
+            await Task.Run(() =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    TreeViewItem item = sender as TreeViewItem;
+
+                    foreach (TreeViewItem i in item.Items)
+                    {
+                   
+                        LoadSubKeys(i);
+                    
+
+                    }
+                });
+            });
 
         }
 
@@ -124,9 +141,10 @@ namespace WpfAppRegEdit
 
             table.Items.Clear();
 
-            foreach (string name in key.GetValueNames())
+            foreach (string name in key.GetSubKeyNames())
             {
-                table.Items.Add(name);
+               
+                //table.Items.Add();
             }
 
            
