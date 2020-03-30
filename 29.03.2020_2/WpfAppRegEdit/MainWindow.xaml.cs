@@ -49,16 +49,14 @@ namespace WpfAppRegEdit
                 var item = new TreeViewItem()
                 {
                     Header = reg,
-                    //IsExpanded = false
+                    IsExpanded = false
                 };
 
                 LoadSubKeys(item);
 
-
-                //item.ItemsSource = reg.GetSubKeyNames();
                 TreeView.Items.Add(item);
 
-                // LoadSubKeys(item);
+               
             }
 
 
@@ -144,6 +142,10 @@ namespace WpfAppRegEdit
 
         private void Item_Selected(object sender, RoutedEventArgs e)
         {
+            // ЦЕЙ БЛОК ВИКЛИКАЄТЬСЯ БАГАТО РАЗ... ЯКЩО НЕ ВИВЕСТИ СПОВІЩЕННЯ, ТО ТАБЛИЦЯ НЕ ОНОВЛЮЄТЬСЯ!!!! 
+            // ЙМОВІРНО ЦЕ ЧЕРЕЗ ВЕЛИКУ КЫЛЬКІСТЬ ЕЛЕМЕНТІВ В ТАБЛИЦІ
+            // ЧОМУ ТАК ВІДБУВАЄТЬСЯ НА ЖАЛЬ НЕ ЗНАЙШОВ
+
             TreeViewItem item = sender as TreeViewItem;
 
             RegistryKey key = (item.Header as RegistryKey);
