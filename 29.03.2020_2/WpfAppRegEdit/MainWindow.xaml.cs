@@ -17,6 +17,15 @@ using System.Windows.Shapes;
 
 namespace WpfAppRegEdit
 {
+
+    public class Reg
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Data { get; set; }
+    }
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -52,7 +61,7 @@ namespace WpfAppRegEdit
                // LoadSubKeys(item);
             }
 
-
+          
         }
 
         private async void Item_Expanded(object sender, RoutedEventArgs e)
@@ -139,15 +148,36 @@ namespace WpfAppRegEdit
 
             RegistryKey key = (item.Header as RegistryKey);
 
-            table.Items.Clear();
+            //MessageBox.Show(item.Header?.ToString());
 
-            foreach (string name in key.GetSubKeyNames())
+            table.ItemsSource = null;
+
+            List<Reg> regs = new List<Reg>();
+
+            foreach (string name in key.GetValueNames())
             {
-               
-                //table.Items.Add();
+                RegistryKey tempKey = key.OpenSubKey(name);
+                
+                regs.Add(new Reg()
+                {
+                    Data = key.GetValue(name).ToString(),
+                    Name = name,
+                    Type = tempKey?.GetType()?.ToString()
+                });
+                
             }
 
-           
+            table.ItemsSource = regs;
+            table.Items.Refresh();
+
+            
+             MessageBox.Show("ss");
+
+        }
+
+        private void Table_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
