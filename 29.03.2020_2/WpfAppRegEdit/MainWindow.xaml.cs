@@ -44,7 +44,7 @@ namespace WpfAppRegEdit
                 Registry.CurrentConfig
             };
 
-            foreach(RegistryKey reg in regs)
+            foreach (RegistryKey reg in regs)
             {
                 var item = new TreeViewItem()
                 {
@@ -58,10 +58,10 @@ namespace WpfAppRegEdit
                 //item.ItemsSource = reg.GetSubKeyNames();
                 TreeView.Items.Add(item);
 
-               // LoadSubKeys(item);
+                // LoadSubKeys(item);
             }
 
-          
+
         }
 
         private async void Item_Expanded(object sender, RoutedEventArgs e)
@@ -83,9 +83,9 @@ namespace WpfAppRegEdit
 
                     foreach (TreeViewItem i in item.Items)
                     {
-                   
+
                         LoadSubKeys(i);
-                    
+
 
                     }
                 });
@@ -108,8 +108,8 @@ namespace WpfAppRegEdit
 
                 }
             });
-            
-            
+
+
         }
 
         private void LoadSubKeys(TreeViewItem item)
@@ -120,7 +120,7 @@ namespace WpfAppRegEdit
 
             if (key.SubKeyCount <= 0) return;
 
-            foreach(var name in key.GetSubKeyNames())
+            foreach (var name in key.GetSubKeyNames())
             {
                 try
                 {
@@ -129,9 +129,9 @@ namespace WpfAppRegEdit
                         IsExpanded = false,
                         Header = key.OpenSubKey(name)
                     };
-                   
+
                     item.Items.Add(subitem);
-                   
+
                     item.Expanded += Item_Expanded;
                     item.Selected += Item_Selected;
                 }
@@ -156,27 +156,19 @@ namespace WpfAppRegEdit
 
             foreach (string name in key.GetValueNames())
             {
-                RegistryKey tempKey = key.OpenSubKey(name);
-                
                 regs.Add(new Reg()
                 {
-                    Data = key.GetValue(name).ToString(),
+                    Data = key.GetValue(name)?.ToString(),
                     Name = name,
-                    Type = tempKey?.GetType()?.ToString()
+                    Type = key.GetValueKind(name).ToString(),
                 });
-                
+
             }
 
             table.ItemsSource = regs;
             table.Items.Refresh();
 
-            
-             MessageBox.Show("ss");
-
-        }
-
-        private void Table_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+            MessageBox.Show("1");
 
         }
     }
