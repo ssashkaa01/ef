@@ -60,7 +60,7 @@ namespace WpfAppRegEdit
 
             hook = SetHook(proc);
             //Application.Run();
-            UnhookWindowsHookEx(hook);
+            //UnhookWindowsHookEx(hook);
            
         }
 
