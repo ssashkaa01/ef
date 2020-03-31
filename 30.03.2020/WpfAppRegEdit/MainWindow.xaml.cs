@@ -30,9 +30,37 @@ namespace WpfAppRegEdit
  
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance { get; private set; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            ReloadRegistry();
+            Instance = this;
+
+
+
+
+
+
+            // ПОДІЯ НА КЛАВІШУ 1
+
+
+
+
+
+
+
+            hook = SetHook(proc);
+            //Application.Run();
+            //UnhookWindowsHookEx(hook);
+           
+        }
+
+        private void ReloadRegistry()
+        {
+            TreeView.Items.Clear();
 
             RegistryKey[] regs = new[]
             {
@@ -55,16 +83,11 @@ namespace WpfAppRegEdit
 
                 TreeView.Items.Add(item);
 
-               
             }
 
-            hook = SetHook(proc);
-            //Application.Run();
-            //UnhookWindowsHookEx(hook);
-           
         }
 
-      
+
         private async void Item_Expanded(object sender, RoutedEventArgs e)
         {
             //ParameterizedThreadStart ts1 = new ParameterizedThreadStart(UpdateExpandItems);
@@ -177,12 +200,10 @@ namespace WpfAppRegEdit
 
         }
 
-
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private static HookProc proc = HookCallback;
         private static IntPtr hook = IntPtr.Zero;
-
 
         private static IntPtr SetHook(HookProc proc)
         {
@@ -192,27 +213,23 @@ namespace WpfAppRegEdit
                 return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
             }
         }
+
         private delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            MessageBox.Show("1");
             if ((nCode >= 0) && (wParam == (IntPtr)WM_KEYDOWN))
             {
+                // ПОДІЯ НА КЛАВІШУ 1
                 int vkCode = Marshal.ReadInt32(lParam);
 
-                
-                //if ((Keys)vkCode == Keys.Y)
-                //{
-                //    Console.WriteLine("{0} change to {1}!", (Keys)vkCode, Keys.N);
-                //    lParam = (IntPtr)Keys.N;
-                //    //return (IntPtr)1;
-                //}
-
-              //  if (((Keys)vkCode == Keys.LWin) || ((Keys)vkCode == Keys.RWin))
+                // ПОДІЯ НА КЛАВІШУ 1
+                if (vkCode == 49)
                 {
-                   // Console.WriteLine("{0} blocked!", (Keys)vkCode);
-                    return (IntPtr)1;
+                    Instance.ReloadRegistry();
+                    MessageBox.Show("Registry reload!");
                 }
+                return (IntPtr)1;
             }
             return CallNextHookEx(hook, nCode, wParam, lParam);
         }
