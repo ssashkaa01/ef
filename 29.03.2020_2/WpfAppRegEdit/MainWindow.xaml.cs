@@ -71,8 +71,7 @@ namespace WpfAppRegEdit
 
             await Task.Run(() =>
             {
-                this.Dispatcher.Invoke(() =>
-                {
+                
                     TreeViewItem item = sender as TreeViewItem;
 
                     foreach (TreeViewItem i in item.Items)
@@ -82,36 +81,26 @@ namespace WpfAppRegEdit
 
 
                     }
-                });
+               
             });
 
         }
 
-        private async Task UpdateExpandItems(object sender)
-        {
-            await Task.Run(() =>
-            {
-                TreeViewItem item = sender as TreeViewItem;
-
-                foreach (TreeViewItem i in item.Items)
-                {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        LoadSubKeys(i);
-                    });
-
-                }
-            });
-
-
-        }
-
+       
         private void LoadSubKeys(TreeViewItem item)
         {
-            item.Items.Clear();
+            this.Dispatcher.Invoke(() =>
+            {
+                item.Items.Clear();
 
-            RegistryKey key = (item.Header as RegistryKey);
+            });
 
+            RegistryKey key = this.Dispatcher.Invoke(() =>
+            {
+               return (item.Header as RegistryKey);
+            });
+
+        
             if (key.SubKeyCount <= 0) return;
 
             foreach (var name in key.GetSubKeyNames())
@@ -124,7 +113,10 @@ namespace WpfAppRegEdit
                         Header = key.OpenSubKey(name)
                     };
 
-                    item.Items.Add(subitem);
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        item.Items.Add(subitem);
+                    });
 
                     item.Expanded += Item_Expanded;
                     item.Selected += Item_Selected;
