@@ -84,6 +84,8 @@ namespace WpfAppDownloadFile
             if (!isCanceled && percentDownload != 100)
             {
                 webClient.CancelAsync();
+                webClient.Dispose();
+                webClient = null;
                 isCanceled = true;
                 DeleteFile();
                 return true;
@@ -139,7 +141,10 @@ namespace WpfAppDownloadFile
         // Видалити завантажуваний файл
         public void DeleteFile()
         {
-            webClient.CancelAsync();
+            if(webClient !=null)
+            {
+                webClient.CancelAsync();
+            }
 
             if (File.Exists(downloadPath))
             {
