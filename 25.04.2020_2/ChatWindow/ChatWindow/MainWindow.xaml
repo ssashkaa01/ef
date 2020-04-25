@@ -21,7 +21,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            
         </Grid.ColumnDefinitions>
 
         <TextBlock Margin="10" TextAlignment="Center" TextWrapping="Wrap" Text="Login" VerticalAlignment="Bottom"/>
@@ -32,14 +32,9 @@
         <TextBlock Margin="10" TextWrapping="Wrap" TextAlignment="Center" Text="Chat" VerticalAlignment="Bottom" Grid.Column="1"/>
         <ListBox Name="msgList" Margin="10" Grid.Column="1" Grid.Row="1" Grid.RowSpan="5"/>
 
-        <TextBlock Margin="10" TextWrapping="Wrap" TextAlignment="Center" Text="Users" VerticalAlignment="Bottom" Grid.Column="2"/>
-        <ListBox Name="usersList" Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="5" SelectionChanged="UsersList_SelectionChanged"/>
-
         <TextBlock Margin="10" TextAlignment="Center" TextWrapping="Wrap" Text="Public message" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="6"/>
-        <TextBlock Margin="10" TextAlignment="Center" TextWrapping="Wrap" Text="Private message" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="6"/>
-        <TextBox Name="msgTb" Margin="10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="2"/>
+        <TextBox Name="msgTb" Margin="10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="1"/>
         <Button Name="Send" Content="Send public message" Margin="10" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="1" Click="Send_Click"/>
-        <Button Name="SendPrivate" Content="Send private message" Margin="10" Grid.Column="2" Grid.Row="8" Grid.ColumnSpan="1" Click="SendPrivate_Click" />
 
     </Grid>
 </Window>

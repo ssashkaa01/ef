@@ -18,28 +18,14 @@ using ChatWindow.ServiceReference1;
 namespace ChatWindow
 {
     public delegate void CallbackDelegateOnRecieve(string user, string msg);
-    public delegate void CallbackDelegateOnUsersChange(string[] users);
-    public delegate void CallbackDelegateOnReceivePrivateMessage(string user, string msg);
 
     class CallbackHandler : IChatCallback
     {
         static public event CallbackDelegateOnRecieve OnRecieve;
-        static public event CallbackDelegateOnUsersChange OnUsersChange;
-        static public event CallbackDelegateOnReceivePrivateMessage OnReceivePrivateMessage;
-
-        public void RecieveMessage(string user, string msg)
+     
+        public void TextForUsers(string user, string msg)
         {
             OnRecieve(user, msg);
-        }
-
-        public void UsersChange(string[] users)
-        {
-            OnUsersChange(users);
-        }
-
-        public void ReceivePrivateMessage(string user, string msg)
-        {
-            OnReceivePrivateMessage(user, msg);
         }
     }
    
@@ -57,12 +43,10 @@ namespace ChatWindow
             msgList.ItemsSource = listMainChat;
 
             CallbackHandler.OnRecieve += AddMessageToMainChat;
-            CallbackHandler.OnUsersChange += ListUsersChanged;
-            CallbackHandler.OnReceivePrivateMessage += ReceivePrivateMessage;
 
             Logout.IsEnabled = false;
             Send.IsEnabled = false;
-            SendPrivate.IsEnabled = false;
+
         }
 
         // Отримано повідомлення в головному чаті
@@ -70,18 +54,6 @@ namespace ChatWindow
         {
             listMainChat.Add(user + " : " + msg);
             msgList.Items.Refresh();
-        }
-
-        // Змінено список активних користувачів
-        private void ListUsersChanged(string[] users)
-        {
-            usersList.Items.Clear();
-
-            foreach(string name in users)
-            {
-                if(name != loginTb.Text)
-                    usersList.Items.Add(name);
-            }
         }
 
         // Отримано приватне повідомлення
@@ -105,15 +77,6 @@ namespace ChatWindow
             loginTb.IsEnabled = false;
             Logout.IsEnabled = true;
             Send.IsEnabled = true;
-            SendPrivate.IsEnabled = true;
-
-            string []users = proxy.GetUsers();
-
-            foreach (string name in users)
-            {
-                if (name != loginTb.Text)
-                    usersList.Items.Add(name);
-            }
         }
 
         // Вийти
@@ -124,14 +87,12 @@ namespace ChatWindow
             Logout.IsEnabled = false;
             Login.IsEnabled = true;
             Send.IsEnabled = false;
-            SendPrivate.IsEnabled = false;
-            usersList.Items.Clear();
         }
 
         // Відправити повідомлення
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            proxy.SendMessasge(loginTb.Text, msgTb.Text);
+            proxy.SendText(loginTb.Text, msgTb.Text);
 
             listMainChat.Add(loginTb.Text + " : "+ msgTb.Text);
 
@@ -141,21 +102,6 @@ namespace ChatWindow
         private void UsersList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-        }
-
-        private void SendPrivate_Click(object sender, RoutedEventArgs e)
-        {
-            if(usersList.SelectedIndex == -1)
-            {
-                MessageBox.Show("Please select user from list");
-                return;
-            }
-
-            proxy.SendPrivateMessasge(loginTb.Text, msgTb.Text, usersList.SelectedValue.ToString());
-
-            listMainChat.Add(loginTb.Text + "[PRIVATE TO " + usersList.SelectedItem.ToString() + "] : " + msgTb.Text);
-
-            msgList.Items.Refresh();
         }
     }
 }
