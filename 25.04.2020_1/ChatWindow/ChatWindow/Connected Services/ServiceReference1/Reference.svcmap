@@ -25,6 +25,7 @@
     <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="46d0677e-aac4-4e02-8a80-5415c7a09237" SourceId="1" SourceUrl="http://localhost:8733/Chat/mex" />
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="561143b4-d0af-4bb4-818f-dfeaa56f53b0" SourceId="1" SourceUrl="http://localhost:8733/Chat/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="772e2bd2-2602-43b8-acc0-c245c36dba02" SourceId="1" SourceUrl="http://localhost:8733/Chat/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="da568579-c99d-47b6-8f2a-709fc7c16e14" SourceId="1" SourceUrl="http://localhost:8733/Chat/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -21,11 +21,23 @@ namespace ChatWindow.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChat/Login", ReplyAction="http://tempuri.org/IChat/LoginResponse")]
         System.Threading.Tasks.Task<bool> LoginAsync(string name);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChat/GetUsers", ReplyAction="http://tempuri.org/IChat/GetUsersResponse")]
+        string[] GetUsers();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChat/GetUsers", ReplyAction="http://tempuri.org/IChat/GetUsersResponse")]
+        System.Threading.Tasks.Task<string[]> GetUsersAsync();
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/SendMessasge")]
         void SendMessasge(string userName, string msg);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/SendMessasge")]
         System.Threading.Tasks.Task SendMessasgeAsync(string userName, string msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/SendPrivateMessasge")]
+        void SendPrivateMessasge(string NameFrom, string msg, string NameTo);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/SendPrivateMessasge")]
+        System.Threading.Tasks.Task SendPrivateMessasgeAsync(string NameFrom, string msg, string NameTo);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChat/Logout", ReplyAction="http://tempuri.org/IChat/LogoutResponse")]
         void Logout(string name);
@@ -38,7 +50,13 @@ namespace ChatWindow.ServiceReference1 {
     public interface IChatCallback {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/RecieveMessage")]
-        void RecieveMessage(string msg);
+        void RecieveMessage(string user, string msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/UsersChange")]
+        void UsersChange(string[] users);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IChat/ReceivePrivateMessage")]
+        void ReceivePrivateMessage(string user, string msg);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -77,12 +95,28 @@ namespace ChatWindow.ServiceReference1 {
             return base.Channel.LoginAsync(name);
         }
         
+        public string[] GetUsers() {
+            return base.Channel.GetUsers();
+        }
+        
+        public System.Threading.Tasks.Task<string[]> GetUsersAsync() {
+            return base.Channel.GetUsersAsync();
+        }
+        
         public void SendMessasge(string userName, string msg) {
             base.Channel.SendMessasge(userName, msg);
         }
         
         public System.Threading.Tasks.Task SendMessasgeAsync(string userName, string msg) {
             return base.Channel.SendMessasgeAsync(userName, msg);
+        }
+        
+        public void SendPrivateMessasge(string NameFrom, string msg, string NameTo) {
+            base.Channel.SendPrivateMessasge(NameFrom, msg, NameTo);
+        }
+        
+        public System.Threading.Tasks.Task SendPrivateMessasgeAsync(string NameFrom, string msg, string NameTo) {
+            return base.Channel.SendPrivateMessasgeAsync(NameFrom, msg, NameTo);
         }
         
         public void Logout(string name) {

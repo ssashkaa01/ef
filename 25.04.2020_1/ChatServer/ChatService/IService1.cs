@@ -13,6 +13,9 @@ namespace ChatService
         [OperationContract]
         bool Login(string name);
 
+        [OperationContract]
+        string[] GetUsers();
+
         [OperationContract(IsOneWay = true)]
         void SendMessasge(string userName, string msg);
 
@@ -26,7 +29,7 @@ namespace ChatService
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void RecieveMessage(string msg);
+        void RecieveMessage(string user, string msg);
 
         [OperationContract(IsOneWay = true)]
         void UsersChange(string[] users);
