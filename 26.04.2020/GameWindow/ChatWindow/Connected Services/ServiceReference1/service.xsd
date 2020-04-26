@@ -15,20 +15,26 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendMessasge">
+  <xs:element name="GoTo">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="msg" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="action" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendPrivateMessasge">
+  <xs:element name="GoToResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="NameFrom" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="msg" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="NameTo" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="GoToResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetWaitStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="status" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -39,9 +45,16 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="LogoutResponse">
+  <xs:element name="GetPlayers">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPlayersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetPlayersResult" nillable="true" type="q1:ArrayOfstring" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="OnStartGame">
@@ -68,10 +81,15 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="CheckOnline">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="OnPlayersChange">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="players" nillable="true" type="q1:ArrayOfstring" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="players" nillable="true" type="q2:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

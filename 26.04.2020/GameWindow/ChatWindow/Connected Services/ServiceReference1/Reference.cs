@@ -21,23 +21,29 @@ namespace ChatWindow.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/Login", ReplyAction="http://tempuri.org/IGame/LoginResponse")]
         System.Threading.Tasks.Task<bool> LoginAsync(string name);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SendMessasge")]
-        void SendMessasge(string userName, string msg);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/GoTo", ReplyAction="http://tempuri.org/IGame/GoToResponse")]
+        bool GoTo(string name, int action);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SendMessasge")]
-        System.Threading.Tasks.Task SendMessasgeAsync(string userName, string msg);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/GoTo", ReplyAction="http://tempuri.org/IGame/GoToResponse")]
+        System.Threading.Tasks.Task<bool> GoToAsync(string name, int action);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SendPrivateMessasge")]
-        void SendPrivateMessasge(string NameFrom, string msg, string NameTo);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SetWaitStatus")]
+        void SetWaitStatus(string name, bool status);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SendPrivateMessasge")]
-        System.Threading.Tasks.Task SendPrivateMessasgeAsync(string NameFrom, string msg, string NameTo);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SetWaitStatus")]
+        System.Threading.Tasks.Task SetWaitStatusAsync(string name, bool status);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/Logout", ReplyAction="http://tempuri.org/IGame/LogoutResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/Logout")]
         void Logout(string name);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/Logout", ReplyAction="http://tempuri.org/IGame/LogoutResponse")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/Logout")]
         System.Threading.Tasks.Task LogoutAsync(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/GetPlayers", ReplyAction="http://tempuri.org/IGame/GetPlayersResponse")]
+        string[] GetPlayers();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/GetPlayers", ReplyAction="http://tempuri.org/IGame/GetPlayersResponse")]
+        System.Threading.Tasks.Task<string[]> GetPlayersAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -54,6 +60,9 @@ namespace ChatWindow.ServiceReference1 {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnPlayerExit")]
         void OnPlayerExit();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/CheckOnline")]
+        void CheckOnline();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnPlayersChange")]
         void OnPlayersChange(string[] players);
@@ -95,20 +104,20 @@ namespace ChatWindow.ServiceReference1 {
             return base.Channel.LoginAsync(name);
         }
         
-        public void SendMessasge(string userName, string msg) {
-            base.Channel.SendMessasge(userName, msg);
+        public bool GoTo(string name, int action) {
+            return base.Channel.GoTo(name, action);
         }
         
-        public System.Threading.Tasks.Task SendMessasgeAsync(string userName, string msg) {
-            return base.Channel.SendMessasgeAsync(userName, msg);
+        public System.Threading.Tasks.Task<bool> GoToAsync(string name, int action) {
+            return base.Channel.GoToAsync(name, action);
         }
         
-        public void SendPrivateMessasge(string NameFrom, string msg, string NameTo) {
-            base.Channel.SendPrivateMessasge(NameFrom, msg, NameTo);
+        public void SetWaitStatus(string name, bool status) {
+            base.Channel.SetWaitStatus(name, status);
         }
         
-        public System.Threading.Tasks.Task SendPrivateMessasgeAsync(string NameFrom, string msg, string NameTo) {
-            return base.Channel.SendPrivateMessasgeAsync(NameFrom, msg, NameTo);
+        public System.Threading.Tasks.Task SetWaitStatusAsync(string name, bool status) {
+            return base.Channel.SetWaitStatusAsync(name, status);
         }
         
         public void Logout(string name) {
@@ -117,6 +126,14 @@ namespace ChatWindow.ServiceReference1 {
         
         public System.Threading.Tasks.Task LogoutAsync(string name) {
             return base.Channel.LogoutAsync(name);
+        }
+        
+        public string[] GetPlayers() {
+            return base.Channel.GetPlayers();
+        }
+        
+        public System.Threading.Tasks.Task<string[]> GetPlayersAsync() {
+            return base.Channel.GetPlayersAsync();
         }
     }
 }

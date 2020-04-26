@@ -13,14 +13,17 @@ namespace ChatService
         [OperationContract]
         bool Login(string name);
 
-        [OperationContract(IsOneWay = true)]
-        void SendMessasge(string userName, string msg);
+        [OperationContract]
+        bool GoTo(string name, int action);
 
         [OperationContract(IsOneWay = true)]
-        void SendPrivateMessasge(string NameFrom, string msg, string NameTo);
+        void SetWaitStatus(string name, bool status = true);
+
+        [OperationContract(IsOneWay = true)]
+        void Logout(string name);
 
         [OperationContract]
-        void Logout(string name);
+        string[] GetPlayers();
     }
 
     public interface ICallback
@@ -36,6 +39,9 @@ namespace ChatService
 
         [OperationContract(IsOneWay = true)]
         void OnPlayerExit();
+
+        [OperationContract(IsOneWay = true)]
+        void CheckOnline();
 
         [OperationContract(IsOneWay = true)]
         void OnPlayersChange(string[] players);

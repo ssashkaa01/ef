@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="321.078" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -14,9 +14,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+           
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -43,27 +41,22 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="0"/>
-            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="0"/>
-            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="0"/>
+            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="0" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="0" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="0" Click="Button_Click"/>
 
-            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="1"/>
-            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="1"/>
-            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="1"/>
+            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="1" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="1" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="1" Click="Button_Click"/>
 
-            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="2"/>
-            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="2"/>
-            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="2"/>
-
+            <Button Content="-" Margin="10" Grid.Column="0" Grid.Row="2" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="1" Grid.Row="2" Click="Button_Click"/>
+            <Button Content="-" Margin="10" Grid.Column="2" Grid.Row="2" Click="Button_Click"/>
 
         </Grid>
 
-        <TextBlock Margin="10" TextWrapping="Wrap" TextAlignment="Center" Text="Users" VerticalAlignment="Bottom" Grid.Column="2"/>
+        <TextBlock Margin="10" TextWrapping="Wrap" TextAlignment="Center" Text="Users online" VerticalAlignment="Bottom" Grid.Column="2"/>
         <ListBox Name="usersList" Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="5"/>
-
-        <TextBlock Margin="10" TextAlignment="Center" TextWrapping="Wrap" Text="Message" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="6"/>
-        <TextBox Name="msgTb" Margin="10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="7"/>
-        <Button Name="Send" Content="Send message" Margin="10" Grid.Column="1" Grid.Row="8"/>
 
     </Grid>
 </Window>

@@ -60,6 +60,11 @@ namespace ChatWindow
         {
             PlayerExit();
         }
+
+        public void CheckOnline()
+        {
+            return;
+        }
     }
    
     public partial class MainWindow : Window
@@ -86,10 +91,6 @@ namespace ChatWindow
             foreach(Button btn in gameField.Children)
             {
                 btn.Content = $"{counter}";
-
-                // Клік по клітинці
-                btn.Click += Game_Btn_Click;
-
                 counter++;
             }
 
@@ -98,19 +99,25 @@ namespace ChatWindow
         // Змінено список активних гравців
         private void ListPlayersChanged(string[] players)
         {
-            throw new NotImplementedException();
+            usersList.Items.Clear();
+
+            foreach (string name in players)
+            {
+                if (name != loginTb.Text)
+                    usersList.Items.Add(name);
+            }
         }
 
         // Гравець покинув гру
         private void OnPlayerExit()
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Гравець покинув гру!");
         }
 
         // Гравець може ходити
         private void OnPlayerCanGo()
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Ваш хід!");
         }
 
         // Гра завершена 
@@ -122,6 +129,8 @@ namespace ChatWindow
         // Гру розпочато
         private void OnStartGame(string namePlayer)
         {
+            MessageBox.Show($"You play with: {namePlayer}");
+
             int counter = 1;
 
             foreach (Button btn in gameField.Children)
@@ -136,17 +145,37 @@ namespace ChatWindow
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             if (!proxy.Login(loginTb.Text))
-                MessageBox.Show("Player is already exist.");
+            {
+                MessageBox.Show("User is already exist.");
+                return;
+            }
+
+            Login.IsEnabled = false;
+            loginTb.IsEnabled = false;
+            Logout.IsEnabled = true;
+           
+            string[] users = proxy.GetPlayers();
+
+            foreach (string name in users)
+            {
+                if (name != loginTb.Text)
+                    usersList.Items.Add(name);
+            }
         }
 
         // Вийти
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-
+            proxy.LogoutAsync(loginTb.Text);
+            loginTb.IsEnabled = true;
+            Logout.IsEnabled = false;
+            Login.IsEnabled = true;
+         
+            usersList.Items.Clear();
         }
 
         // Клік по клітинці
-        private void Game_Btn_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btnClick = (sender as Button);
 
@@ -167,8 +196,6 @@ namespace ChatWindow
             }
 
             btnClick.Content = "O";
-
-
         }
     }
 }
