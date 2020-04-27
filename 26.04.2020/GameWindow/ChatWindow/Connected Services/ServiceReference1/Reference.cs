@@ -61,8 +61,14 @@ namespace ChatWindow.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnPlayerExit")]
         void OnPlayerExit();
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/CheckOnline")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnBadAction")]
+        void OnBadAction();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/CheckOnline", ReplyAction="http://tempuri.org/IGame/CheckOnlineResponse")]
         void CheckOnline();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnSendMessage")]
+        void OnSendMessage(string message);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnPlayersChange")]
         void OnPlayersChange(string[] players);

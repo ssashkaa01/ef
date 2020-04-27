@@ -22,6 +22,8 @@ namespace ChatWindow
     public delegate void CallbackDelegateOnPlayerCanGo();
     public delegate void CallbackDelegateOnPlayerExit();
     public delegate void CallbackDelegateOnPlayersChange(string[] players);
+    public delegate void CallbackDelegateOnSendMessage(string message);
+    public delegate void CallbackDelegateOnBadAction();
 
     class CallbackHandler : IGameCallback
     {
@@ -30,6 +32,8 @@ namespace ChatWindow
         static public event CallbackDelegateOnPlayersChange PlayersChange;
         static public event CallbackDelegateOnPlayerCanGo PlayerCanGo;
         static public event CallbackDelegateOnPlayerExit PlayerExit;
+        static public event CallbackDelegateOnBadAction BadAction;
+        static public event CallbackDelegateOnSendMessage SendMessage;
 
         // Гра розпочалася
         public void OnStartGame(string namePlayer)
@@ -65,14 +69,24 @@ namespace ChatWindow
         {
             return;
         }
+
+        public void OnBadAction()
+        {
+            BadAction();
+        }
+
+        public void OnSendMessage(string message)
+        {
+            SendMessage(message);
+        }
     }
    
     public partial class MainWindow : Window
     {
         static InstanceContext instance = new InstanceContext(new CallbackHandler());
         GameClient proxy = new GameClient(instance);
-        bool canGo = true;
-        bool gameStarted = true;
+        bool canGo = false;
+        bool gameStarted = false;
 
         List<string> listMainChat = new List<string>();
 
@@ -85,6 +99,8 @@ namespace ChatWindow
             CallbackHandler.EndGame += OnEndGame;
             CallbackHandler.PlayerCanGo += OnPlayerCanGo;
             CallbackHandler.PlayerExit += OnPlayerExit;
+            CallbackHandler.BadAction += OnBadAction;
+            CallbackHandler.SendMessage += OnSendMessage;
 
             int counter = 1;
 
@@ -94,6 +110,16 @@ namespace ChatWindow
                 counter++;
             }
 
+        }
+
+        private void OnSendMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        private void OnBadAction()
+        {
+            MessageBox.Show("Ви не можете походити");
         }
 
         // Змінено список активних гравців
@@ -108,28 +134,44 @@ namespace ChatWindow
             }
         }
 
+        private void StopGame()
+        {
+            canGo = false;
+            gameStarted = false;
+        }
+
         // Гравець покинув гру
         private void OnPlayerExit()
         {
+            StopGame();
             MessageBox.Show("Гравець покинув гру!");
         }
 
         // Гравець може ходити
         private void OnPlayerCanGo()
         {
+            canGo = true;
             MessageBox.Show("Ваш хід!");
         }
 
         // Гра завершена 
         private void OnEndGame(string namePlayer)
         {
-            throw new NotImplementedException();
+            StopGame();
+
+            if(loginTb.Text == namePlayer)
+            {
+                MessageBox.Show("Ви перемогли");
+            } else
+            {
+                MessageBox.Show("Ви програли");
+            }
         }
 
         // Гру розпочато
         private void OnStartGame(string namePlayer)
         {
-            MessageBox.Show($"You play with: {namePlayer}");
+            MessageBox.Show($"Ви граєте з: {namePlayer}");
 
             int counter = 1;
 
@@ -146,7 +188,7 @@ namespace ChatWindow
         {
             if (!proxy.Login(loginTb.Text))
             {
-                MessageBox.Show("User is already exist.");
+                MessageBox.Show("Користувач з таким іменем авторизований");
                 return;
             }
 
@@ -177,25 +219,39 @@ namespace ChatWindow
         // Клік по клітинці
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Button btnClick = (sender as Button);
-
-            if (!canGo)
+            if(!gameStarted)
             {
-                MessageBox.Show("Going other player!");
+                MessageBox.Show("Очікуйте суперника!");
                 return;
             }
+            else if (!canGo)
+            {
+                MessageBox.Show("Зараз не ваш хід!");
+                return;
+            }
+
+            Button btnClick = (sender as Button);
+            int action;
 
             try
             {
-                int numberBtn = Convert.ToInt32(btnClick.Content);
+                action = Convert.ToInt32(btnClick.Content);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("You can't go to this.");
+                MessageBox.Show("Помилка ходу!");
                 return;
             }
 
-            btnClick.Content = "O";
+            if(proxy.GoTo(loginTb.Text, action))
+            {
+                btnClick.Content = "O";
+                canGo = false;
+            }
+            else
+            {
+                MessageBox.Show("Помилка ходу!");
+            }
         }
     }
 }

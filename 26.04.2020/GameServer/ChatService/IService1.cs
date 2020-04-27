@@ -40,6 +40,9 @@ namespace ChatService
         [OperationContract(IsOneWay = true)]
         void OnPlayerExit();
 
+        [OperationContract(IsOneWay = true)]
+        void OnBadAction();
+
         [OperationContract]
         void CheckOnline();
 

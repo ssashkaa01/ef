@@ -40,9 +40,10 @@ namespace ChatService
         public Command()
         {
             playersId = new List<int>();
+            player1 = new List<int>();
+            player2 = new List<int>();
             isStarted = false;
-            goPlayer = playersId[0];
-
+           
             // Виграшні комбінації
             winCombinations = new List<List<int>>()
             {
@@ -122,15 +123,15 @@ namespace ChatService
 
             if (playersId[0] == idPlayer)
             {
-                nums = player1.OrderBy(n => n).ToList();
+                nums = player1?.OrderBy(n => n)?.ToList();
             }
             // Другий гравець
             else if (playersId[1] == idPlayer)
             {
-                nums = player2.OrderBy(n => n).ToList();
+                nums = player2?.OrderBy(n => n)?.ToList();
             }
 
-            if (nums.Count < 3) return false;
+            if (nums == null || nums.Count < 3) return false;
 
             int n1, n2, n3;
 
@@ -172,6 +173,8 @@ namespace ChatService
             };
 
             isStarted = true;
+
+            goPlayer = playersId[0];
 
             return true;
         }
@@ -265,6 +268,7 @@ namespace ChatService
             t2.Start();
         }
 
+        // Перевірка перемоги
         public void CheckWin()
         {
             while (true)
@@ -275,14 +279,28 @@ namespace ChatService
                 {
                     for (int c = 0; c < commands.Count; c++)
                     {
-                       
-                        if(commands[c].CheckWin(commands[c].playersId[0]))
+                        if (!commands[c].isStarted) continue;
+
+                        for (int p = 0; p < 2; p++)
                         {
-                            GetPlayerById(commands[c].playersId[0]).callback.OnEndGame(GetPlayerById(commands[c].playersId[1]).name);
-                        }
-                        else if (commands[c].CheckWin(commands[c].playersId[1]))
-                        {
-                            GetPlayerById(commands[c].playersId[1]).callback.OnEndGame(GetPlayerById(commands[c].playersId[0]).name);
+                            // Перевіряємо гравця на перемогу
+                            if (commands[c].CheckWin(commands[c].playersId[p]))
+                            {
+                                // Сповіщаємо переможця
+                                GetPlayerById(commands[c].playersId[p]).callback.OnEndGame(GetPlayerById(commands[c].playersId[p]).name);
+                                GetPlayerById(commands[c].playersId[p]).statusWait = true;
+
+                                int? idEnemy = commands[c].GetIdEnemy(commands[c].playersId[p]);
+
+                                // Сповіщаємо суперника
+                                if(idEnemy != null)
+                                {
+                                    GetPlayerById(Convert.ToInt32(idEnemy)).callback.OnEndGame(GetPlayerById(commands[c].playersId[p]).name);
+                                    GetPlayerById(Convert.ToInt32(idEnemy)).statusWait = true;
+                                }
+
+                                commands[c].isStarted = false;
+                            }
                         }
                     }
                 }
@@ -391,7 +409,7 @@ namespace ChatService
             NotifPlayersChanged();
         }
 
-        // Сповістити всіх про оновленн списку
+        // Сповістити всіх про оновлення списку
         private void NotifPlayersChanged(string name = null)
         {
             lock(players)
@@ -444,7 +462,7 @@ namespace ChatService
                 return true;
             }else
             {
-
+                p.callback.OnBadAction();
                 return false;
             }
         }
