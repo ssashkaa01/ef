@@ -28,7 +28,7 @@ namespace ChatService
     // Команда
     public class Command
     {
-        public List<int> players { get; set; } // ids
+        public List<int> playersId { get; set; } // ids
         private List<int> gameField { get; set; }
         private List<int> winCombination { get; set; }
         private List<int> player1 { get; set; }
@@ -40,7 +40,7 @@ namespace ChatService
        
         public Command()
         {
-            players = new List<int>();
+            playersId = new List<int>();
             isStarted = false;
             goPlayer = 1;
 
@@ -90,7 +90,7 @@ namespace ChatService
         // Перевірити чи гравець очікує
         public bool IsWaitingPlayer()
         {
-            if(players.Count > 1)
+            if(playersId.Count > 1)
             {
                 return false;
             }
@@ -105,19 +105,19 @@ namespace ChatService
         {
             if (isStarted) return false;
             
-            return (players.Count == 2);
+            return (playersId.Count == 2);
         }
 
         // Перевірити чи команда не пуста
         public bool HasPlayers()
         {
-            return (players.Count == 0);    
+            return (playersId.Count == 0);    
         }
 
         // Перевірити чи команда не пуста
         public bool HasPlayer(int pId)
         {
-            foreach (int id in players)
+            foreach (int id in playersId)
             {
                 if (id == pId) return true;
             }
@@ -130,7 +130,7 @@ namespace ChatService
         {
             if (!HasPlayer(pId)) return false;
 
-            players.Remove(pId);
+            playersId.Remove(pId);
 
             return true;
         }
@@ -140,7 +140,7 @@ namespace ChatService
         {
             if (HasPlayer(pId)) return false;
 
-            players.Add(pId);
+            playersId.Add(pId);
 
             return true;
         }
@@ -206,10 +206,10 @@ namespace ChatService
                                             {
                                                 commands[c].Start();
 
-                                                players[commands[c].players[0]].callback.OnStartGame(players[commands[c].players[0]].name);
-                                                players[commands[1].players[1]].callback.OnStartGame(players[commands[c].players[1]].name);
+                                                GetPlayerById(commands[c].playersId[0]).callback.OnStartGame(GetPlayerById(commands[c].playersId[1]).name);
+                                                GetPlayerById(commands[c].playersId[1]).callback.OnStartGame(GetPlayerById(commands[c].playersId[0]).name);
 
-                                                players[commands[c].players[0]].callback.OnPlayerCanGo();
+                                                GetPlayerById(commands[c].playersId[0]).callback.OnPlayerCanGo();
                                             }
                                             break;
                                         }
@@ -314,7 +314,7 @@ namespace ChatService
                             players.Remove(p);
                         }
 
-                        foreach (int pId in commands[c].players)
+                        foreach (int pId in commands[c].playersId)
                         {
                             players[pId].callback.OnPlayerExit();
                             players[pId].statusWait = true;
@@ -356,6 +356,23 @@ namespace ChatService
                 for (int p = 0; p < players.Count; p++)
                 {
                     if (players[p].name == name)
+                    {
+                        return players[p];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // Отримати гравця по Id
+        private Player GetPlayerById(int id)
+        {
+            lock (players)
+            {
+                for (int p = 0; p < players.Count; p++)
+                {
+                    if (players[p].id == id)
                     {
                         return players[p];
                     }
