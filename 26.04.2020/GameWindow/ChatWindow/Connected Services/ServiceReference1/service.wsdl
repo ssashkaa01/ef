@@ -402,6 +402,29 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
+  <wsp:Policy wsu:Id="WSDualHttpBinding_IGame_OnEnemyGoTo_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
   <wsp:Policy wsu:Id="WSDualHttpBinding_IGame_CheckOnline_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
@@ -540,6 +563,9 @@
   <wsdl:message name="IGame_OnBadAction_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:OnBadAction" />
   </wsdl:message>
+  <wsdl:message name="IGame_OnEnemyGoTo_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:OnEnemyGoTo" />
+  </wsdl:message>
   <wsdl:message name="IGame_CheckOnline_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:CheckOnline" />
   </wsdl:message>
@@ -585,6 +611,9 @@
     </wsdl:operation>
     <wsdl:operation name="OnBadAction">
       <wsdl:output wsaw:Action="http://tempuri.org/IGame/OnBadAction" message="tns:IGame_OnBadAction_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnEnemyGoTo">
+      <wsdl:output wsaw:Action="http://tempuri.org/IGame/OnEnemyGoTo" message="tns:IGame_OnEnemyGoTo_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation name="CheckOnline">
       <wsdl:output wsaw:Action="http://tempuri.org/IGame/CheckOnline" message="tns:IGame_CheckOnline_OutputCallbackMessage" />
@@ -679,6 +708,13 @@
       <soap12:operation soapAction="http://tempuri.org/IGame/OnBadAction" style="document" />
       <wsdl:output>
         <wsp:PolicyReference URI="#WSDualHttpBinding_IGame_OnBadAction_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnEnemyGoTo">
+      <soap12:operation soapAction="http://tempuri.org/IGame/OnEnemyGoTo" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#WSDualHttpBinding_IGame_OnEnemyGoTo_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>

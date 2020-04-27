@@ -43,6 +43,9 @@ namespace ChatService
         [OperationContract(IsOneWay = true)]
         void OnBadAction();
 
+        [OperationContract(IsOneWay = true)]
+        void OnEnemyGoTo(int action);
+
         [OperationContract]
         void CheckOnline();
 

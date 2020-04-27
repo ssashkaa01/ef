@@ -438,33 +438,34 @@ namespace ChatService
         // Походити до
         public bool GoTo(string name, int action)
         {
-            Player p = GetPlayerByName(name);
+            int? idxPlayer = GetIdxPlayerByName(name);
             int? idxCommand = GetCommandPlayerById(name);
 
-            if (idxCommand == null) return false;
+            if (idxCommand == null || idxPlayer == null) return false;
 
             // Пробуємо зробити хід
-            if(commands[Convert.ToInt32(idxCommand)].GoTo(p.id, action))
+            if(commands[Convert.ToInt32(idxCommand)].GoTo(players[Convert.ToInt32(idxPlayer)].id, action))
             {
-                int? idEnemy = commands[Convert.ToInt32(idxCommand)].GetIdEnemy(p.id);
+                int? idEnemy = commands[Convert.ToInt32(idxCommand)].GetIdEnemy(players[Convert.ToInt32(idxPlayer)].id);
 
                 if(idEnemy != null)
                 {
                     // Сповіщаємо суперника, що його хід
+                    players[Convert.ToInt32(idEnemy)].callback.OnEnemyGoTo(action);
                     players[Convert.ToInt32(idEnemy)].callback.OnPlayerCanGo();
                 }
                 else
                 {
                     // Якщо суперника не знайдено, то сповіщаємо і ставимо в режим очікування
-                    p.callback.OnPlayerExit();
-                    players[p.id].statusWait = true;
+                    players[Convert.ToInt32(idxPlayer)].callback.OnPlayerExit();
+                    players[Convert.ToInt32(idxPlayer)].statusWait = true;
                 }
                 return true;
             }else
             {
-                p.callback.OnBadAction();
+                players[Convert.ToInt32(idxPlayer)].callback.OnBadAction();
                 return false;
-            }
+            } 
         }
 
         // Видалити гравця із списку
@@ -538,6 +539,23 @@ namespace ChatService
             }
 
             return null;
+        }
+
+        // Отримати id гравця
+        private int? GetIdxPlayerByName(string name)
+        {
+
+            lock (players)
+            {
+                for (int p = 0; p < players.Count; p++)
+                {
+                    if (players[p].name == name)
+                    {
+                        return p;
+                    }
+                }
+                return null;
+            }
         }
 
         // Отримати гравця

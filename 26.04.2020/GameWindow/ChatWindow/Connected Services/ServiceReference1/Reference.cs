@@ -64,6 +64,9 @@ namespace ChatWindow.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnBadAction")]
         void OnBadAction();
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/OnEnemyGoTo")]
+        void OnEnemyGoTo(int action);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/CheckOnline", ReplyAction="http://tempuri.org/IGame/CheckOnlineResponse")]
         void CheckOnline();
         

@@ -24,6 +24,7 @@ namespace ChatWindow
     public delegate void CallbackDelegateOnPlayersChange(string[] players);
     public delegate void CallbackDelegateOnSendMessage(string message);
     public delegate void CallbackDelegateOnBadAction();
+    public delegate void CallbackDelegateOnEnemyGoTo(int action);
 
     class CallbackHandler : IGameCallback
     {
@@ -34,6 +35,7 @@ namespace ChatWindow
         static public event CallbackDelegateOnPlayerExit PlayerExit;
         static public event CallbackDelegateOnBadAction BadAction;
         static public event CallbackDelegateOnSendMessage SendMessage;
+        static public event CallbackDelegateOnEnemyGoTo EnemyGoTo;
 
         // Гра розпочалася
         public void OnStartGame(string namePlayer)
@@ -79,6 +81,11 @@ namespace ChatWindow
         {
             SendMessage(message);
         }
+
+        public void OnEnemyGoTo(int action)
+        {
+            EnemyGoTo(action);
+        }
     }
    
     public partial class MainWindow : Window
@@ -101,6 +108,7 @@ namespace ChatWindow
             CallbackHandler.PlayerExit += OnPlayerExit;
             CallbackHandler.BadAction += OnBadAction;
             CallbackHandler.SendMessage += OnSendMessage;
+            CallbackHandler.EnemyGoTo += OnEnemyGoTo;
 
             int counter = 1;
 
@@ -110,6 +118,21 @@ namespace ChatWindow
                 counter++;
             }
 
+        }
+
+        private void OnEnemyGoTo(int action)
+        {
+            int counter = 1;
+
+            foreach (Button btn in gameField.Children)
+            {
+                if(counter == action)
+                {
+                    btn.Content = "X";
+                }
+               
+                counter++;
+            }
         }
 
         private void OnSendMessage(string message)
@@ -172,6 +195,8 @@ namespace ChatWindow
         private void OnStartGame(string namePlayer)
         {
             MessageBox.Show($"Ви граєте з: {namePlayer}");
+
+            gameStarted = true;
 
             int counter = 1;
 
