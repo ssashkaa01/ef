@@ -29,11 +29,10 @@ namespace ChatService
     public class Command
     {
         public List<int> playersId { get; set; } // ids
+        private List<List<int>> winCombinations { get; set; }
         private List<int> gameField { get; set; }
-        private List<int> winCombination { get; set; }
         private List<int> player1 { get; set; }
         private List<int> player2 { get; set; }
-
 
         public bool isStarted { get; set; }
         private int goPlayer { get; set; }
@@ -42,22 +41,107 @@ namespace ChatService
         {
             playersId = new List<int>();
             isStarted = false;
-            goPlayer = 1;
+            goPlayer = playersId[0];
 
             // Виграшні комбінації
-            winCombination = new List<int>()
+            winCombinations = new List<List<int>>()
             {
-                123, 345, 678, 136, 247, 358, 148, 346
+                new List<int>{ 1,2,3 },
+                new List<int>{ 4,5,6 },
+                new List<int>{ 7,8,9 },
+                new List<int>{ 1,4,7 },
+                new List<int>{ 2,5,8 },
+                new List<int>{ 3,6,9 },
+                new List<int>{ 1,5,9 },
+                new List<int>{ 3,5,7 }
             };
         }
 
         // Походити до клітинки
-        public bool GoTo(int number)
+        public bool GoTo(int idPlayer, int number)
         {
+            if (goPlayer != idPlayer) return false;
+
+            int idx = gameField.IndexOf(number);
+
+            if (idx == -1) return false;
+
+            gameField.RemoveAt(idx);
+
+            // Перший гравець
+            if (playersId[0] == idPlayer)
+            {
+                player1.Add(number);
+            }
+            // Другий гравець
+            else if (playersId[1] == idPlayer)
+            {
+                player2.Add(number);
+            }
 
 
-
+            // Даємо хід іншому гравцеві
+            goPlayer = (goPlayer == playersId[0]) ? playersId[1] : playersId[0];
+            
             return true;
+        }
+
+        // Перевірити комбінацію
+        private bool CheckCombo(int n1, int n2, int n3)
+        {
+            foreach (List<int> winCombo in winCombinations)
+            {
+                if(winCombo[0] == n1 && winCombo[1] == n2 && winCombo[2] == n3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Перевірити виграш
+        public bool CheckWin(int idPlayer)
+        {
+            List<int> nums = new List<int>();
+
+            if (playersId[0] == idPlayer)
+            {
+                nums = player1.OrderBy(n => n).ToList();
+            }
+            // Другий гравець
+            else if (playersId[1] == idPlayer)
+            {
+                nums = player2.OrderBy(n => n).ToList();
+            }
+
+            if (nums.Count < 3) return false;
+
+            int n1, n2, n3;
+
+            for (int i = 0; i < nums.Count; i++)
+            {
+                n1 = nums[i];
+
+                if (nums.FindIndex(delegate (int idx) { return idx == i + 1; }) == -1) {
+                    break;
+                }
+                n2 = nums[i + 1];
+
+                if (nums.FindIndex(delegate (int idx) { return idx == i + 2; }) == -1)
+                {
+                    break;
+                }
+                n3 = nums[i + 2];
+
+
+                if (CheckCombo(n1,n2,n3))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         // Розпочати гру
@@ -160,6 +244,34 @@ namespace ChatService
             Thread t = new Thread(new ThreadStart(PlayerSortProc));
             t.IsBackground = true;
             t.Start();
+
+            Thread t2 = new Thread(new ThreadStart(CheckWin));
+            t2.IsBackground = true;
+            t2.Start();
+        }
+
+        public void CheckWin()
+        {
+            while (true)
+            {
+                Thread.Sleep(100);
+
+                lock (commands)
+                {
+                    for (int c = 0; c < commands.Count; c++)
+                    {
+                       
+                        if(commands[c].CheckWin(commands[c].playersId[0]))
+                        {
+                            GetPlayerById(commands[c].playersId[0]).callback.OnEndGame(GetPlayerById(commands[c].playersId[1]).name);
+                        }
+                        else if (commands[c].CheckWin(commands[c].playersId[1]))
+                        {
+                            GetPlayerById(commands[c].playersId[1]).callback.OnEndGame(GetPlayerById(commands[c].playersId[0]).name);
+                        }
+                    }
+                }
+            }
         }
 
         // Розприділення гравців
@@ -293,7 +405,11 @@ namespace ChatService
         // Походити до
         public bool GoTo(string name, int action)
         {
-            throw new NotImplementedException();
+            Player p = GetPlayerByName(name);
+
+
+
+            return false;
         }
 
         // Видалити гравця із списку

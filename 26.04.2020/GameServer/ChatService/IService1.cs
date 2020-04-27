@@ -40,8 +40,11 @@ namespace ChatService
         [OperationContract(IsOneWay = true)]
         void OnPlayerExit();
 
-        [OperationContract(IsOneWay = true)]
+        [OperationContract]
         void CheckOnline();
+
+        [OperationContract(IsOneWay = true)]
+        void OnSendMessage(string message);
 
         [OperationContract(IsOneWay = true)]
         void OnPlayersChange(string[] players);
