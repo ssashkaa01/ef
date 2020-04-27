@@ -233,8 +233,7 @@ namespace ChatService
                     }
                 }
             }
-        }
-        
+        }  
 
         // Авторизація
         public bool Login(string name)
@@ -247,26 +246,15 @@ namespace ChatService
                 players.Add(new Player(++counterId, name, OperationContext.Current.GetCallbackChannel<ICallback>()));
             }
 
+            NotifPlayersChanged(name);
+
             return true;
         }
 
+        // Отримати активних гравців
         public string[] GetPlayers()
         {
             return players.Select(i => i.name).ToArray();
-        }
-
-        // Перевірити існування гравця
-        private bool PlayerExists(string name)
-        {
-            foreach(Player player in players)
-            {
-                if(player.name == name)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // Вийти
@@ -277,21 +265,26 @@ namespace ChatService
         }
 
         // Сповістити всіх про оновленн списку
-        private void NotifPlayersChanged()
+        private void NotifPlayersChanged(string name = null)
         {
             lock(players)
             {
                 string[] playersOnline = players.Select(p => p.name).ToArray();
 
-                foreach (Player p in players)
+                for (int p = 0; p < players.Count; p++)
                 {
+                    if(name != null)
+                    {
+                        if (players[p].name == name) continue;
+                    }
+
                     try
                     {
-                        p.callback.OnPlayersChange(playersOnline);
+                        players[p].callback.OnPlayersChange(playersOnline);
                     }
                     catch (Exception ex)
                     {
-                        RemovePlayer(p.name);
+                        RemovePlayer(players[p].name);
                     }
                 }
             }
@@ -339,15 +332,15 @@ namespace ChatService
         {
             lock(commands)
             {
-                foreach (Command c in commands)
+                for (int c = 0; c < commands.Count; c++)
                 {
                     Player p = GetPlayerByName(name);
 
                     if (p == null) continue;
 
-                    if (c.HasPlayer(p.id))
+                    if (commands[c].HasPlayer(p.id))
                     {
-                        return c;
+                        return commands[c];
                     }
                 }
             }
@@ -377,14 +370,31 @@ namespace ChatService
         {
             lock(players)
             {
-                foreach (Player p in players)
+                for (int p = 0; p < players.Count; p++)
                 {
-                    if (p.name == name)
+                    if (players[p].name == name)
                     {
-                        p.statusWait = status;
+                        players[p].statusWait = status;
                     }
                 }
             }
+        }
+
+        // Перевірити існування гравця
+        private bool PlayerExists(string name)
+        {
+            lock (players)
+            {
+                for (int p = 0; p < players.Count; p++)
+                {
+                    if (players[p].name == name)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
