@@ -11,22 +11,24 @@ namespace ChatService
     // Гравець
     public class Player
     {
+        public int id { get; set; }
         public string name { get; set; }
         public bool statusWait { get; set; }
         public ICallback callback { get; set; }
 
-        public Player(string name, ICallback callback)
+        public Player(int id, string name, ICallback callback)
         {
             this.name = name;
             this.callback = callback;
             this.statusWait = true;
+            this.id = id;
         }
     }
 
     // Команда
     public class Command
     {
-        public List<Player> players { get; set; }
+        public List<int> players { get; set; } // ids
         private List<int> gameField { get; set; }
         private List<int> winCombination { get; set; }
         private List<int> player1 { get; set; }
@@ -38,7 +40,7 @@ namespace ChatService
        
         public Command()
         {
-            players = new List<Player>();
+            players = new List<int>();
             isStarted = false;
             goPlayer = 1;
 
@@ -113,34 +115,32 @@ namespace ChatService
         }
 
         // Перевірити чи команда не пуста
-        public bool HasPlayer(Player player)
+        public bool HasPlayer(int pId)
         {
-            if (!HasPlayers()) return false;
-
-            foreach (Player p in players)
+            foreach (int id in players)
             {
-                if (p.name == player.name) return true;
+                if (id == pId) return true;
             }
 
-            return true;
+            return false;
         }
 
         // Видалити гравця з команди
-        public bool RemovePlayer(Player player)
+        public bool RemovePlayer(int pId)
         {
-            if (!HasPlayer(player)) return false;
+            if (!HasPlayer(pId)) return false;
 
-            players.Remove(player);
+            players.Remove(pId);
 
             return true;
         }
 
         // Добавити гравця в команду
-        public bool AddPlayer(Player player)
+        public bool AddPlayer(int pId)
         {
-            if (HasPlayer(player)) return false;
+            if (HasPlayer(pId)) return false;
 
-            players.Add(player);
+            players.Add(pId);
 
             return true;
         }
@@ -151,20 +151,15 @@ namespace ChatService
     {
         private List<Player> players = new List<Player>();
         private List<Command> commands = new List<Command>();
+        private int counterId { get; set; }
 
         public Chat()
         {
+            counterId = 0;
+
             Thread t = new Thread(new ThreadStart(PlayerSortProc));
             t.IsBackground = true;
             t.Start();
-
-            Thread t2 = new Thread(new ThreadStart(GameProc));
-            t2.IsBackground = true;
-            t2.Start();
-
-            Thread t3 = new Thread(new ThreadStart(PlayerCheckProc));
-            t3.IsBackground = true;
-            t3.Start();
         }
 
         // Розприділення гравців
@@ -172,15 +167,25 @@ namespace ChatService
         {
             while(true)
             {
-                Thread.Sleep(70);
+                Thread.Sleep(100);
 
                 lock(players)
                 {
                     // Перевіряємо всіх користувачів на очікування гри
-                    foreach (Player p in players)
+                    for (int i = 0; i < players.Count; i++)
                     {
+                        try
+                        {
+                            players[i].callback.CheckOnline();
+                        }
+                        catch (Exception ex)
+                        {
+                            RemovePlayer(players[i].name);
+                            continue;
+                        }
+
                         // Якщо користувач очікує, то підбираємо команду
-                        if (p.statusWait == true)
+                        if (players[i].statusWait == true)
                         {
                             bool setted = false;
 
@@ -189,12 +194,23 @@ namespace ChatService
                                 
                                 lock(commands)
                                 {
-                                    foreach (Command comm in commands)
+                                    for (int c = 0; c < commands.Count; c++)
                                     {
-                                        if (comm.IsWaitingPlayer())
+                                        if (commands[c].IsWaitingPlayer())
                                         {
-                                            comm.AddPlayer(p);
+                                            players[i].statusWait = false;
+                                            commands[c].AddPlayer(players[i].id);
                                             setted = true;
+
+                                            if (commands[c].CanPlay())
+                                            {
+                                                commands[c].Start();
+
+                                                players[commands[c].players[0]].callback.OnStartGame(players[commands[c].players[0]].name);
+                                                players[commands[1].players[1]].callback.OnStartGame(players[commands[c].players[1]].name);
+
+                                                players[commands[c].players[0]].callback.OnPlayerCanGo();
+                                            }
                                             break;
                                         }
                                     }
@@ -204,8 +220,8 @@ namespace ChatService
                             if(!setted)
                             {
                                 Command c = new Command();
-                                p.statusWait = false;
-                                c.AddPlayer(p);
+                                players[i].statusWait = false;
+                                c.AddPlayer(players[i].id);
 
                                 lock (commands)
                                 {
@@ -213,62 +229,6 @@ namespace ChatService
                                 }
 
                             }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Ігровий процес
-        public void GameProc()
-        {
-            while (true)
-            {
-                Thread.Sleep(100);
-
-                lock(commands)
-                {
-                    foreach (Command c in commands)
-                    {
-                        // Гравці відстуні
-                      //  if (!c.HasPlayers())
-                        {
-                         //   commands.Remove(c);
-                        }
-                        // Можна грати
-                       // else 
-                        if (c.CanPlay())
-                        {
-                            c.Start();
-                            c.players[0].callback.OnStartGame(c.players[1].name);
-                            c.players[1].callback.OnStartGame(c.players[0].name);
-
-                            c.players[0].callback.OnPlayerCanGo();
-                        }
-                    }
-                }
-            }
-        }
-
-        // Ігровий процес
-        public void PlayerCheckProc()
-        {
-            while (true)
-            {
-                Thread.Sleep(20);
-
-                lock(players)
-                {
-                    // Перевіряємо всіх користувачів
-                    foreach (Player p in players)
-                    {
-                        try
-                        {
-                            p.callback.CheckOnline();
-                        }
-                        catch (Exception ex)
-                        {
-                            RemovePlayer(p.name);
                         }
                     }
                 }
@@ -284,7 +244,7 @@ namespace ChatService
 
             lock(players)
             {
-                players.Add(new Player(name, OperationContext.Current.GetCallbackChannel<ICallback>()));
+                players.Add(new Player(++counterId, name, OperationContext.Current.GetCallbackChannel<ICallback>()));
             }
 
             return true;
@@ -350,31 +310,24 @@ namespace ChatService
             {
                 Player p = GetPlayerByName(name);
 
-                foreach (Command c in commands)
+                for (int c = 0; c < commands.Count; c++)
                 {
-                    if (c.HasPlayer(p))
+                    if (commands[c].HasPlayer(p.id))
                     {
-                        c.RemovePlayer(p);
+                        commands[c].RemovePlayer(p.id);
 
-                        foreach (Player pl in c.players)
+                        lock (players)
                         {
-                            pl.callback.OnPlayerExit();
-                            pl.statusWait = true;
+                            players.Remove(p);
                         }
 
-                        commands.Remove(c);
-                        break;
-                    }
-                }
-            }
-            
-            lock(players)
-            {
-                foreach (Player pl in players)
-                {
-                    if (pl.name == name)
-                    {
-                        players.Remove(pl);
+                        foreach (int pId in commands[c].players)
+                        {
+                            players[pId].callback.OnPlayerExit();
+                            players[pId].statusWait = true;
+                        }
+
+                        commands.Remove(commands[c]);
                         break;
                     }
                 }
@@ -392,7 +345,7 @@ namespace ChatService
 
                     if (p == null) continue;
 
-                    if (c.HasPlayer(p))
+                    if (c.HasPlayer(p.id))
                     {
                         return c;
                     }
@@ -407,11 +360,11 @@ namespace ChatService
         {
             lock(players)
             {
-                foreach (Player p in players)
+                for (int p = 0; p < players.Count; p++)
                 {
-                    if (p.name == name)
+                    if (players[p].name == name)
                     {
-                        return p;
+                        return players[p];
                     }
                 }
             }
