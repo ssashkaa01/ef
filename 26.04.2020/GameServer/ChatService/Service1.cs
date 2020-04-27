@@ -100,6 +100,21 @@ namespace ChatService
             return false;
         }
 
+        // Отримати id противника
+        public int? GetIdEnemy(int idPlayer)
+        {
+            if (playersId[0] != idPlayer)
+            {
+                return playersId[0];
+            }
+            else if (playersId[1] == idPlayer)
+            {
+                return playersId[1];
+            }
+
+            return null;
+        }
+
         // Перевірити виграш
         public bool CheckWin(int idPlayer)
         {
@@ -406,10 +421,32 @@ namespace ChatService
         public bool GoTo(string name, int action)
         {
             Player p = GetPlayerByName(name);
+            int? idxCommand = GetCommandPlayerById(name);
 
+            if (idxCommand == null) return false;
 
+            // Пробуємо зробити хід
+            if(commands[Convert.ToInt32(idxCommand)].GoTo(p.id, action))
+            {
+                int? idEnemy = commands[Convert.ToInt32(idxCommand)].GetIdEnemy(p.id);
 
-            return false;
+                if(idEnemy != null)
+                {
+                    // Сповіщаємо суперника, що його хід
+                    players[Convert.ToInt32(idEnemy)].callback.OnPlayerCanGo();
+                }
+                else
+                {
+                    // Якщо суперника не знайдено, то сповіщаємо і ставимо в режим очікування
+                    p.callback.OnPlayerExit();
+                    players[p.id].statusWait = true;
+                }
+                return true;
+            }else
+            {
+
+                return false;
+            }
         }
 
         // Видалити гравця із списку
@@ -457,6 +494,27 @@ namespace ChatService
                     if (commands[c].HasPlayer(p.id))
                     {
                         return commands[c];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // Отримати команду гравця
+        private int? GetCommandPlayerById(string name)
+        {
+            lock (commands)
+            {
+                for (int c = 0; c < commands.Count; c++)
+                {
+                    Player p = GetPlayerByName(name);
+
+                    if (p == null) continue;
+
+                    if (commands[c].HasPlayer(p.id))
+                    {
+                        return c;
                     }
                 }
             }
