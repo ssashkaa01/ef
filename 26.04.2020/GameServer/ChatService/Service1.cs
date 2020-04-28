@@ -35,6 +35,7 @@ namespace ChatService
         private List<int> player2 { get; set; }
 
         public bool isStarted { get; set; }
+        public bool isEnded { get; set; }
         private int goPlayer { get; set; }
        
         public Command()
@@ -43,7 +44,8 @@ namespace ChatService
             player1 = new List<int>();
             player2 = new List<int>();
             isStarted = false;
-           
+            isEnded = false;
+
             // Виграшні комбінації
             winCombinations = new List<List<int>>()
             {
@@ -163,7 +165,7 @@ namespace ChatService
         // Розпочати гру
         public bool Start()
         {
-            if (isStarted) return false;
+            if (isStarted || isEnded) return false;
 
             // Ігрове поле
             gameField = new List<int>{
@@ -205,7 +207,7 @@ namespace ChatService
         // Перевірити чи команда може грати
         public bool CanPlay()
         {
-            if (isStarted) return false;
+            if (isStarted || isEnded) return false;
             
             return (playersId.Count == 2);
         }
@@ -258,126 +260,123 @@ namespace ChatService
         public Chat()
         {
             counterId = 0;
-
-            Thread t = new Thread(new ThreadStart(PlayerSortProc));
-            t.IsBackground = true;
-            t.Start();
-
-            Thread t2 = new Thread(new ThreadStart(CheckWin));
-            t2.IsBackground = true;
-            t2.Start();
         }
 
         // Перевірка перемоги
-        public void CheckWin()
+        public bool? CheckWin(string name)
         {
-            while (true)
+            if (!PlayerExists(name))
+                return null;
+
+            int? idxPlayer = GetIdxPlayerByName(name);
+            int? idxCommand = GetCommandIdxByPlayer(name);
+
+            if (idxCommand == null || idxPlayer == null) return null;
+
+            if (!commands[Convert.ToInt32(idxCommand)].isStarted) return null;
+
+            for (int p = 0; p < 2; p++)
             {
-                Thread.Sleep(100);
-
-                lock (commands)
+                // Перевіряємо гравця на перемогу
+                if (commands[Convert.ToInt32(idxCommand)].CheckWin(commands[Convert.ToInt32(idxCommand)].playersId[p]))
                 {
-                    for (int c = 0; c < commands.Count; c++)
+                    int? idEnemy = commands[Convert.ToInt32(idxCommand)].GetIdEnemy(commands[Convert.ToInt32(idxCommand)].playersId[p]);
+                    GetPlayerById(Convert.ToInt32(idEnemy)).statusWait = true;
+                    GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).statusWait = true;
+                    commands[Convert.ToInt32(idxCommand)].isStarted = false;
+
+                    // Сповіщаємо переможця
+                    if(GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name == name)
                     {
-                        if (!commands[c].isStarted) continue;
-
-                        for (int p = 0; p < 2; p++)
+                        // Сповіщаємо суперника
+                        if (idEnemy != null)
                         {
-                            // Перевіряємо гравця на перемогу
-                            if (commands[c].CheckWin(commands[c].playersId[p]))
-                            {
-                                // Сповіщаємо переможця
-                                GetPlayerById(commands[c].playersId[p]).callback.OnEndGame(GetPlayerById(commands[c].playersId[p]).name);
-                                GetPlayerById(commands[c].playersId[p]).statusWait = true;
-
-                                int? idEnemy = commands[c].GetIdEnemy(commands[c].playersId[p]);
-
-                                // Сповіщаємо суперника
-                                if(idEnemy != null)
-                                {
-                                    GetPlayerById(Convert.ToInt32(idEnemy)).callback.OnEndGame(GetPlayerById(commands[c].playersId[p]).name);
-                                    GetPlayerById(Convert.ToInt32(idEnemy)).statusWait = true;
-                                }
-
-                                commands[c].isStarted = false;
-                            }
+                            GetPlayerById(Convert.ToInt32(idEnemy)).callback.OnEndGame(GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name);
                         }
+                        return true;
+                    }
+                    else
+                    {
+                        GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).callback.OnEndGame(GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name);
+                        return false;
                     }
                 }
             }
+
+            return null;
         }
 
         // Розприділення гравців
-        public void PlayerSortProc()
+        public bool? SetMeInCommand(string name)
         {
-            while(true)
+            if (!PlayerExists(name))
             {
-                Thread.Sleep(100);
+                return false;
+            }
+                
+            int? idxPlayer = GetIdxPlayerByName(name);
+            int? idxCommand = GetCommandIdxByPlayer(name);
 
-                lock(players)
+            if (idxCommand != null || idxPlayer == null) return false;
+
+            bool setted = false;
+
+            lock (commands)
+            {
+
+                // Якщо користувач очікує, то підбираємо команду
+                if (players[Convert.ToInt32(idxPlayer)].statusWait == true)
                 {
-                    // Перевіряємо всіх користувачів на очікування гри
-                    for (int i = 0; i < players.Count; i++)
+                    // Якщо команди є
+                    if (commands.Count > 0)
                     {
-                        try
+                        lock (commands)
                         {
-                            players[i].callback.CheckOnline();
-                        }
-                        catch (Exception ex)
-                        {
-                            RemovePlayer(players[i].name);
-                            continue;
-                        }
-
-                        // Якщо користувач очікує, то підбираємо команду
-                        if (players[i].statusWait == true)
-                        {
-                            bool setted = false;
-
-                            if (commands.Count > 0)
+                            for (int c = 0; c < commands.Count; c++)
                             {
-                                
-                                lock(commands)
+                                if (commands[c].IsWaitingPlayer())
                                 {
-                                    for (int c = 0; c < commands.Count; c++)
+                                    players[Convert.ToInt32(idxPlayer)].statusWait = false;
+                                    commands[c].AddPlayer(players[Convert.ToInt32(idxPlayer)].id);
+                                    setted = true;
+
+                                    if (commands[c].CanPlay())
                                     {
-                                        if (commands[c].IsWaitingPlayer())
+                                        commands[c].Start();
+
+                                        // Сповіщаємо 
+                                        if (GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[1]).name == name)
                                         {
-                                            players[i].statusWait = false;
-                                            commands[c].AddPlayer(players[i].id);
-                                            setted = true;
-
-                                            if (commands[c].CanPlay())
-                                            {
-                                                commands[c].Start();
-
-                                                GetPlayerById(commands[c].playersId[0]).callback.OnStartGame(GetPlayerById(commands[c].playersId[1]).name);
-                                                GetPlayerById(commands[c].playersId[1]).callback.OnStartGame(GetPlayerById(commands[c].playersId[0]).name);
-
-                                                GetPlayerById(commands[c].playersId[0]).callback.OnPlayerCanGo();
-                                            }
-                                            break;
+                                            // Сповіщаємо суперника
+                                            GetPlayerById(commands[c].playersId[0]).callback.OnStartGame(GetPlayerById(commands[c].playersId[1]).name);
+                                            GetPlayerById(commands[c].playersId[0]).callback.OnPlayerCanGo();
+                                           
                                         }
+                                       
                                     }
+                                    break;
                                 }
-                            }
-                            
-                            if(!setted)
-                            {
-                                Command c = new Command();
-                                players[i].statusWait = false;
-                                c.AddPlayer(players[i].id);
-
-                                lock (commands)
-                                {
-                                    commands.Add(c);
-                                }
-
                             }
                         }
                     }
                 }
+                            
+                if(!setted)
+                {
+                    Command c = new Command();
+                    players[Convert.ToInt32(idxPlayer)].statusWait = false;
+                    c.AddPlayer(players[Convert.ToInt32(idxPlayer)].id);
+
+                    lock (commands)
+                    {
+                        commands.Add(c);
+                        return null;
+                    }
+
+                }
             }
+
+            return true;
         }  
 
         // Авторизація
@@ -439,7 +438,7 @@ namespace ChatService
         public bool GoTo(string name, int action)
         {
             int? idxPlayer = GetIdxPlayerByName(name);
-            int? idxCommand = GetCommandPlayerById(name);
+            int? idxCommand = GetCommandIdxByPlayer(name);
 
             if (idxCommand == null || idxPlayer == null) return false;
 
@@ -457,13 +456,13 @@ namespace ChatService
                 else
                 {
                     // Якщо суперника не знайдено, то сповіщаємо і ставимо в режим очікування
-                    players[Convert.ToInt32(idxPlayer)].callback.OnPlayerExit();
+                   // players[Convert.ToInt32(idxPlayer)].callback.OnPlayerExit();
                     players[Convert.ToInt32(idxPlayer)].statusWait = true;
                 }
                 return true;
             }else
             {
-                players[Convert.ToInt32(idxPlayer)].callback.OnBadAction();
+              //  players[Convert.ToInt32(idxPlayer)].callback.OnBadAction();
                 return false;
             } 
         }
@@ -499,6 +498,7 @@ namespace ChatService
             }
         }
 
+
         // Отримати команду гравця
         private Command GetCommandPlayer(string name)
         {
@@ -521,7 +521,7 @@ namespace ChatService
         }
 
         // Отримати команду гравця
-        private int? GetCommandPlayerById(string name)
+        private int? GetCommandIdxByPlayer(string name)
         {
             lock (commands)
             {

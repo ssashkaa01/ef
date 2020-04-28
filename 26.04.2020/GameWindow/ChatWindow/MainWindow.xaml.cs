@@ -220,7 +220,25 @@ namespace ChatWindow
             Login.IsEnabled = false;
             loginTb.IsEnabled = false;
             Logout.IsEnabled = true;
-           
+
+            bool? res = proxy.SetMeInCommand(loginTb.Text);
+
+            if(res != null)
+            {
+                if (Convert.ToBoolean(res))
+                {
+                    gameStarted = true;
+                    MessageBox.Show("Вас добавлено в команду!");
+                }
+                else
+                {
+                    MessageBox.Show("Помилка додавання в команду!");
+                }
+            } else
+            {
+                MessageBox.Show("Очікуйте суперника");
+            }
+
             string[] users = proxy.GetPlayers();
 
             foreach (string name in users)
@@ -270,6 +288,19 @@ namespace ChatWindow
 
             if(proxy.GoTo(loginTb.Text, action))
             {
+                bool? res = proxy.CheckWin(loginTb.Text);
+
+                if (res != null)
+                {
+                    if(Convert.ToBoolean(res))
+                    {
+                        MessageBox.Show("Ви перемогли");
+                    }else
+                    {
+                        MessageBox.Show("Ви програли");
+                    }
+                }
+                    
                 btnClick.Content = "O";
                 canGo = false;
             }

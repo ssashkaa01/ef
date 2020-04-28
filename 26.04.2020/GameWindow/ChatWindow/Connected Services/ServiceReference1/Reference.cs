@@ -27,6 +27,18 @@ namespace ChatWindow.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/GoTo", ReplyAction="http://tempuri.org/IGame/GoToResponse")]
         System.Threading.Tasks.Task<bool> GoToAsync(string name, int action);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/SetMeInCommand", ReplyAction="http://tempuri.org/IGame/SetMeInCommandResponse")]
+        System.Nullable<bool> SetMeInCommand(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/SetMeInCommand", ReplyAction="http://tempuri.org/IGame/SetMeInCommandResponse")]
+        System.Threading.Tasks.Task<System.Nullable<bool>> SetMeInCommandAsync(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/CheckWin", ReplyAction="http://tempuri.org/IGame/CheckWinResponse")]
+        System.Nullable<bool> CheckWin(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGame/CheckWin", ReplyAction="http://tempuri.org/IGame/CheckWinResponse")]
+        System.Threading.Tasks.Task<System.Nullable<bool>> CheckWinAsync(string name);
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IGame/SetWaitStatus")]
         void SetWaitStatus(string name, bool status);
         
@@ -119,6 +131,22 @@ namespace ChatWindow.ServiceReference1 {
         
         public System.Threading.Tasks.Task<bool> GoToAsync(string name, int action) {
             return base.Channel.GoToAsync(name, action);
+        }
+        
+        public System.Nullable<bool> SetMeInCommand(string name) {
+            return base.Channel.SetMeInCommand(name);
+        }
+        
+        public System.Threading.Tasks.Task<System.Nullable<bool>> SetMeInCommandAsync(string name) {
+            return base.Channel.SetMeInCommandAsync(name);
+        }
+        
+        public System.Nullable<bool> CheckWin(string name) {
+            return base.Channel.CheckWin(name);
+        }
+        
+        public System.Threading.Tasks.Task<System.Nullable<bool>> CheckWinAsync(string name) {
+            return base.Channel.CheckWinAsync(name);
         }
         
         public void SetWaitStatus(string name, bool status) {

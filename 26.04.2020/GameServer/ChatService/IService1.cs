@@ -16,6 +16,12 @@ namespace ChatService
         [OperationContract]
         bool GoTo(string name, int action);
 
+        [OperationContract]
+        bool? SetMeInCommand(string name);
+
+        [OperationContract]
+        bool? CheckWin(string name);
+
         [OperationContract(IsOneWay = true)]
         void SetWaitStatus(string name, bool status = true);
 
