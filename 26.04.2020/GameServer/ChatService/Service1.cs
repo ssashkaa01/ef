@@ -292,6 +292,7 @@ namespace ChatService
                         // Сповіщаємо суперника
                         if (idEnemy != null)
                         {
+                            
                             GetPlayerById(Convert.ToInt32(idEnemy)).callback.OnEndGame(GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name);
                         }
                         return true;
@@ -475,29 +476,37 @@ namespace ChatService
         {
             lock (commands)
             {
-                Player p = GetPlayerByName(name);
-
-                for (int c = 0; c < commands.Count; c++)
+                try
                 {
-                    if (commands[c].HasPlayer(p.id))
+                    Player p = GetPlayerByName(name);
+
+                    for (int c = 0; c < commands.Count; c++)
                     {
-                        commands[c].RemovePlayer(p.id);
-
-                        lock (players)
+                        if (commands[c].HasPlayer(p.id))
                         {
-                            players.Remove(p);
-                        }
+                            commands[c].RemovePlayer(p.id);
 
-                        foreach (int pId in commands[c].playersId)
-                        {
-                            players[pId].callback.OnPlayerExit();
-                            players[pId].statusWait = true;
-                        }
+                            lock (players)
+                            {
+                                players.Remove(p);
+                            }
 
-                        commands.Remove(commands[c]);
-                        break;
+                            foreach (int pId in commands[c].playersId)
+                            {
+                                players[pId].callback.OnPlayerExit();
+                                players[pId].statusWait = true;
+                            }
+
+                            commands.Remove(commands[c]);
+                            break;
+                        }
                     }
                 }
+                catch(Exception ex)
+                {
+
+                }
+                
             }
         }
 

@@ -289,20 +289,7 @@ namespace ChatWindow
 
             if(proxy.GoTo(loginTb.Text, action))
             {
-                bool? res = proxy.CheckWin(loginTb.Text);
-
-                if (res != null)
-                {
-                    if(Convert.ToBoolean(res))
-                    {
-                        MessageBox.Show("Ви перемогли");
-                    }else
-                    {
-                        MessageBox.Show("Ви програли");
-                    }
-                    StopGame();
-                }
-                    
+                
                 btnClick.Content = "O";
                 canGo = false;
             }
@@ -310,6 +297,22 @@ namespace ChatWindow
             {
                 MessageBox.Show("Помилка ходу!");
             }
+
+            bool? res = proxy.CheckWin(loginTb.Text);
+
+            if (res != null)
+            {
+                if (Convert.ToBoolean(res))
+                {
+                    MessageBox.Show("Ви перемогли");
+                }
+                else
+                {
+                    MessageBox.Show("Ви програли");
+                }
+                StopGame();
+            }
+
         }
     }
 }
