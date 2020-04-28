@@ -223,7 +223,15 @@ namespace ChatWindow
 
             bool? res = proxy.SetMeInCommand(loginTb.Text);
 
-            if(res != null)
+            string[] users = proxy.GetPlayers();
+
+            foreach (string name in users)
+            {
+                if (name != loginTb.Text)
+                    usersList.Items.Add(name);
+            }
+
+            if (res != null)
             {
                 if (Convert.ToBoolean(res))
                 {
@@ -234,17 +242,10 @@ namespace ChatWindow
                 {
                     MessageBox.Show("Помилка додавання в команду!");
                 }
-            } else
+            }
+            else
             {
                 MessageBox.Show("Очікуйте суперника");
-            }
-
-            string[] users = proxy.GetPlayers();
-
-            foreach (string name in users)
-            {
-                if (name != loginTb.Text)
-                    usersList.Items.Add(name);
             }
         }
 
@@ -299,6 +300,7 @@ namespace ChatWindow
                     {
                         MessageBox.Show("Ви програли");
                     }
+                    StopGame();
                 }
                     
                 btnClick.Content = "O";

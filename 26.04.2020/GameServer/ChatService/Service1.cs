@@ -106,13 +106,13 @@ namespace ChatService
         // Отримати id противника
         public int? GetIdEnemy(int idPlayer)
         {
-            if (playersId[0] != idPlayer)
+            if (playersId[0] == idPlayer)
             {
-                return playersId[0];
+                return playersId[1];
             }
             else if (playersId[1] == idPlayer)
             {
-                return playersId[1];
+                return playersId[0];
             }
 
             return null;
@@ -284,9 +284,10 @@ namespace ChatService
                     GetPlayerById(Convert.ToInt32(idEnemy)).statusWait = true;
                     GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).statusWait = true;
                     commands[Convert.ToInt32(idxCommand)].isStarted = false;
+                    commands[Convert.ToInt32(idxCommand)].isEnded = true;
 
                     // Сповіщаємо переможця
-                    if(GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name == name)
+                    if (GetPlayerById(commands[Convert.ToInt32(idxCommand)].playersId[p]).name == name)
                     {
                         // Сповіщаємо суперника
                         if (idEnemy != null)
@@ -449,9 +450,11 @@ namespace ChatService
 
                 if(idEnemy != null)
                 {
+                    int? idxEnemy = GetIdxPlayerById(Convert.ToInt32(idEnemy));
+
                     // Сповіщаємо суперника, що його хід
-                    players[Convert.ToInt32(idEnemy)].callback.OnEnemyGoTo(action);
-                    players[Convert.ToInt32(idEnemy)].callback.OnPlayerCanGo();
+                    players[Convert.ToInt32(idxEnemy)].callback.OnEnemyGoTo(action);
+                    players[Convert.ToInt32(idxEnemy)].callback.OnPlayerCanGo();
                 }
                 else
                 {
@@ -550,6 +553,23 @@ namespace ChatService
                 for (int p = 0; p < players.Count; p++)
                 {
                     if (players[p].name == name)
+                    {
+                        return p;
+                    }
+                }
+                return null;
+            }
+        }
+
+        // Отримати idx гравця
+        private int? GetIdxPlayerById(int id)
+        {
+
+            lock (players)
+            {
+                for (int p = 0; p < players.Count; p++)
+                {
+                    if (players[p].id == id)
                     {
                         return p;
                     }
